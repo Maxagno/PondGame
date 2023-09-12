@@ -7,12 +7,18 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+
+    public static GameManager instance;
+
     public TMP_Text clickCountText; // Reference to the UI text object that displays the click count
     public TMP_Text clickLevelText;
     public TMP_Text clickUpgradeCostText;
     public TMP_Text clickRevenueText;
     public GameObject menuPanel;
     public Clicker clickerManager;
+
+
+    private bool hasInitialized = false;
 
 
     public GameObject UpgradePanel;
@@ -44,11 +50,29 @@ public class GameManager : MonoBehaviour
         }
     }*/
 
-    /*void Start()
+    private void Awake()
     {
-        shop.init();
-        Debug.Log(shop.list[0]);
-    }*/
+        if (!hasInitialized) // Only for the editor mode
+        {
+            // Effectuez vos opérations d'initialisation ici.
+            hasInitialized = true;
+            if (instance == null)
+            {
+                instance = this;
+                DontDestroyOnLoad(gameObject); // Garantit que l'objet GameManager ne sera pas détruit entre les scènes.
+            }
+            else
+            {
+                Debug.Log("BIG Problem ");
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    void Start()
+    {
+        Awake();
+    }
 
 
     public void UpgradeClickLevel()
@@ -80,13 +104,21 @@ public class GameManager : MonoBehaviour
     }
 
 
-    // TODO : Set all panel to false as to only have one enable
+    // TODO : Set all panel to false as to only have one enable // TODO : Rationalize all of the code to make it shorter and more beautiful
     public void onClickCategory(Button button)
     {
+        // Check which button has been clicked 
         if (button.name == "UpgradeCategoryButton") {
             if (UpgradePanel.activeSelf)
             {
-                menuPanel.SetActive(false);
+                // If the menu pannel is off then open it, if not the close it
+                if (menuPanel.activeSelf)
+                {
+                    menuPanel.SetActive(false);
+                } else
+                {
+                    menuPanel.SetActive(true) ;
+                }
             }else
             {
                 menuPanel.SetActive(true);
@@ -98,8 +130,16 @@ public class GameManager : MonoBehaviour
         {
             if (BuyPanel.activeSelf)
             {
-                menuPanel.SetActive(false);
-            }else
+                if (menuPanel.activeSelf)
+                {
+                    menuPanel.SetActive(false);
+                }
+                else
+                {
+                    menuPanel.SetActive(true);
+                }
+            }
+            else
             {
                 menuPanel.SetActive(true);
                 BuyPanel.SetActive(true);
