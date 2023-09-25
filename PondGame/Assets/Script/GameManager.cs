@@ -152,10 +152,13 @@ public class GameManager : MonoBehaviour
     // Called when the player clicks the screen
     public void OnClick()
     {
-        clickerManager.OnClick();
+        if (!menuPanel.activeSelf)
+        {
+            clickerManager.OnClick();
 
-        // Update the UI text object
-        _ShowMoney(money);
+            // Update the UI text object
+            _ShowMoney(money);
+        }
     }
 
     public void getMoney(int amount)
