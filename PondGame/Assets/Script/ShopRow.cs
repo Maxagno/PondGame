@@ -64,4 +64,57 @@ public class ShopRow : MonoBehaviour
     {
         
     }
+
+    public void notEnough()
+    {
+        buyButton.interactable = false;
+    }
+
+    public void enough()
+    {
+        buyButton.interactable = true;
+    }
+
+    // GETTER SETTER
+
+    public int getProduction()
+    {
+        return fishproduction;
+    }
+
+    public int getLevel()
+    {
+        return fishLevel;
+    }
+
+    public int getCost()
+    {
+        return fishPrice;
+    }
+
+    public int getFishId()
+    {
+        return fishId;
+    }
+
+    public int getZoneId()
+    {
+        return zoneId;
+    }
+
+    public void setProduction(int production)
+    {
+        fishproduction = production;
+    }
+    
+    public void setCost(int cost)
+    {
+        fishPrice = cost;
+    }
+
+    public void setLevel(int level)
+    {
+        fishLevel = level;
+    }
+
 }

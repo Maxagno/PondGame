@@ -7,13 +7,27 @@ public class FishManager : MonoBehaviour
     public int id;
     public string name;
     public GameObject _prefabFish;
+    public List<GameObject> spawnPoint = new List<GameObject>();
+    
+    // PRIVATE ATTRIBUTE
     private List<GameObject> list_fish = new List<GameObject>();
 
     private List<Fish> listValueFish = new List<Fish>();
     private List<int> listID = new List<int>();
 
+    private int nbrFish;
+
+    public void initFishManager(int nbrFish)
+    {
+        nbrFish = nbrFish;
+        for (int i = 0; i < nbrFish; i++)
+        {
+            listValueFish.Add(new Fish(i, "Test"));
+        }
+    }
+
     public void initFish()
-    {        
+    {
         listValueFish.Add(new Fish(0, "Test"));
         buyFish(0);
     }
@@ -33,10 +47,11 @@ public class FishManager : MonoBehaviour
     public void buyFish(int id)
     {
         GameObject fishTMP = Instantiate(_prefabFish);
-        Fish tmp_Fish = listValueFish[id];
         Fish fish = fishTMP.GetComponent<Fish>();
-        fish.name = tmp_Fish.name;
-        fishTMP.transform.position = new Vector3(0,0,0);
+
+        fishTMP.transform.position = spawnPoint[id].transform.position;
+        Debug.Log(spawnPoint[id].name);
+
         list_fish.Add(fishTMP);
     }
 }

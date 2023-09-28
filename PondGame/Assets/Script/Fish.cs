@@ -18,18 +18,13 @@ public class Fish : MonoBehaviour
 
     private bool toLeft = false;
 
-    public int level = 1;
-    public int baseProduction = 10;
 
 
-
-    public Fish(int new_id, string new_name, string new_description = "", int new_baseProduction = 10)
+    public Fish(int new_id, string new_name, string new_description = "")
     {
         id = new_id;
         name = new_name;
         description = new_description;
-        baseProduction = new_baseProduction;
-        level = 1;
 
     }
 
@@ -58,11 +53,11 @@ public class Fish : MonoBehaviour
     {
         if (toLeft)
         {
-            transform.position = Vector2.MoveTowards(transform.position, new Vector2(-4, transform.position.y), step);
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(-4, transform.position.y, -2), step);
         }
         else
         {
-            transform.position = Vector2.MoveTowards(transform.position, new Vector2(4, transform.position.y), step);
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(4, transform.position.y, -2), step);
         }
         TurnBack();
     }
@@ -82,26 +77,11 @@ public class Fish : MonoBehaviour
         }
     }
 
-    // Increase in the production
 
-    private void production_Increase()
+
+    public int getId()
     {
-        baseProduction = baseProduction + level;
-    }
-
-
-    /*_____________________________________________________________________________________________*/
-    // GET SET METHOD
-
-    public int get_level() { return level; }
-
-    public void set_level(int amount) {  this.level += amount; }
-
-    public int get_production() { return baseProduction; }
-
-    public string getName()
-    {
-        return name;
+        return id;
     }
 
 

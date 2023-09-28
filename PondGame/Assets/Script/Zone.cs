@@ -12,13 +12,17 @@ public class Zone : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        fishManager.initFish();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void initZone(int amount)
+    {
+        fishManager.initFishManager(amount);
     }
 
     public void buyFish(int id)

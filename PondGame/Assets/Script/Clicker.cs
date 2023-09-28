@@ -4,24 +4,42 @@ using UnityEngine;
 
 public class Clicker : MonoBehaviour
 {
-    public GameManager gameManager;
     private int clickCount = 0; // Counter for the number of clicks
     public int clickLevel = 1;
     public int clickRevenue = 1;
 
-    public int UpgradeClickLevel(int amount)
+    public GameObject GameManager;
+    public GameObject PanelManager;
+    private GameManager gameManager;
+
+    void Start()
+    {
+        gameManager = GameManager.GetComponent<GameManager>();
+    }
+
+
+    public ShopRow upgradeClick(int amount, ShopRow row)
     {
         clickLevel += amount;
         clickRevenue = clickLevel + clickLevel * (clickCount / 1000);
-        return clickLevel;
+        row.setLevel(clickLevel);
+        row.setProduction(clickRevenue);
+        row.setCost(clickRevenue * 2);
+        return row;
     }
 
     public int getClickCount() { return clickCount; }
 
-
     public void OnClick()
     {
-        clickCount++;
-        gameManager.getMoney(clickRevenue);
+        if (!PanelManager.activeSelf)
+        {
+            clickCount++;
+            gameManager.updateMoney(clickRevenue);
+        }
+        else
+        {
+            PanelManager.SetActive(false);
+        }
     }
 }

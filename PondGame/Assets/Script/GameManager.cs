@@ -11,36 +11,45 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
-    public TMP_Text clickCountText; // Reference to the UI text object that displays the click count
-    public TMP_Text clickLevelText;
-    public TMP_Text clickUpgradeCostText;
-    public TMP_Text clickRevenueText;
     public GameObject menuPanel;
-    public Clicker clickerManager;
-
+    public GameObject Clicker;
+    public GameObject ZoneManager;
 
     private bool hasInitialized = false;
 
 
-    public GameObject UpgradePanel;
-    public GameObject BuyPanel;
+    private float timeSinceLastResourceGeneration = 0f;
+    private int timeCalled = 0;
 
-
-    //TMP Variable for the dev 
-    public Fish fish;
-
-    // Variable for the money
     private int money = 0;
-    //private Shop shop = new Shop();
+    private int moneyUsed = 0;
+    private int production = 0;
 
-    // Variable for the click meca
-    private int clickUpgradeCost = 1;
+    private ZoneManager zoneManager;
+    private Clicker clicker;
 
-    //private float timeSinceLastResourceGeneration = 0f;
-    //private int timeCalled = 0;
-    /*private void Update()
+
+    // UI TEXT Variable
+    public TMP_Text MoneyText;
+
+    void Update()
     {
-        
+        PanCamera();
+
+        if (_underInertia && _time <= SmoothTime)
+        {
+            cam.transform.position += _velocity;
+            float newY = Mathf.Clamp(cam.transform.position.y, bottomLimit, topLimit);
+            cam.transform.position = new Vector3(cam.transform.position.x, newY, cam.transform.position.z);
+
+            _velocity = Vector3.Lerp(_velocity, Vector3.zero, _time);
+            _time += Time.smoothDeltaTime;
+        }
+        else
+        {
+            _underInertia = false;
+            _time = 0.0f;
+        }
         // Calculate the current resource generation rate per second based on the current upgrade level
         //float resourceGenerationRate = GetResourceGenerationRate(upgradeLevel);
 
@@ -49,11 +58,13 @@ public class GameManager : MonoBehaviour
         if (timeSinceLastResourceGeneration >= 1f)
         {
             timeCalled++;
-            Debug.Log("Call ressourceGeneration " + timeCalled);
+            //Debug.Log("Call ressourceGeneration " + timeCalled);
             timeSinceLastResourceGeneration= 0f;
             //TODO 
+            money += production;
+            updateMoney();
         }
-    }*/
+    }
 
     private void Awake()
     {
@@ -76,125 +87,58 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        zoneManager = ZoneManager.GetComponent<ZoneManager>();
+        clicker = Clicker.GetComponent<Clicker>();
         Awake();
     }
 
-
-    public void UpgradeClickLevel()
+    public int getMoney()
     {
-        if (clickUpgradeCost <= money)
-        {
-            int tmp = clickerManager.UpgradeClickLevel(1);
-            money -= clickUpgradeCost;
-            clickUpgradeCost = tmp + clickUpgradeCost * (clickerManager.getClickCount() / 600);
-            
-            clickLevelText.text ="" + clickerManager.clickLevel;
-            clickUpgradeCostText.text = "" + clickUpgradeCost + " G";
-            clickRevenueText.text = "" + clickerManager.clickRevenue + " G";
-            _ShowMoney(money);
-        }
+        return money;
     }
 
-    // Called when enabling the menu
-    public void ToggleMenu()
+    public void updateProduction(int amount)
     {
-        if (menuPanel.activeSelf)
-        {
-            menuPanel.SetActive(false);
-        }
-        else
-        {
-            menuPanel.SetActive(true);
-        }
+        production += amount;
     }
 
-
-    // TODO : Set all panel to false as to only have one enable // TODO : Rationalize all of the code to make it shorter and more beautiful
-    public void onClickCategory(Button button)
+    public void newFish(int id, int zoneId)
     {
-        // Check which button has been clicked 
-        if (button.name == "UpgradeCategoryButton") {
-            if (UpgradePanel.activeSelf)
-            {
-                // If the menu pannel is off then open it, if not the close it
-                if (menuPanel.activeSelf)
-                {
-                    menuPanel.SetActive(false);
-                } else
-                {
-                    menuPanel.SetActive(true) ;
-                }
-            }else
-            {
-                menuPanel.SetActive(true);
-                UpgradePanel.SetActive(true);
-                BuyPanel.SetActive(false);
-            }
-        }
-        if (button.name == "BuyCategoryButton")
-        {
-            if (BuyPanel.activeSelf)
-            {
-                if (menuPanel.activeSelf)
-                {
-                    menuPanel.SetActive(false);
-                }
-                else
-                {
-                    menuPanel.SetActive(true);
-                }
-            }
-            else
-            {
-                menuPanel.SetActive(true);
-                BuyPanel.SetActive(true);
-                UpgradePanel.SetActive(false);
-            }
-        }
+        zoneManager.newFish(id, zoneId);
     }
 
-
-    // Called when the player clicks the screen
-    public void OnClick()
-    {
-        if (!menuPanel.activeSelf)
-        {
-            clickerManager.OnClick();
-
-            // Update the UI text object
-            _ShowMoney(money);
-        } else
-        {
-            menuPanel.SetActive(false) ;
-        }
-    }
-
-    public void getMoney(int amount)
+    public void updateMoney(int amount = 0)
     {
         money += amount;
+        updateTextMoney();
     }
-
-
-    //Function to update the text
-    private void _ShowMoney(int money)
+    
+    public ShopRow upgradeClick(int amount, ShopRow clickRow)
     {
-        clickCountText.text = "Gold: " + _getTextFromInt(money);
+        return clicker.upgradeClick(amount, clickRow);
     }
 
+    private void updateTextMoney()
+    {
+        MoneyText.text = "Gold: " + _getTextFromInt(money);
+    }
+
+    //Do better
     private string _getTextFromInt(int value)
     {
-        string[] list = {"", "K", "M", "B", "T", "Q", "Quint", "Sixt" };
+        string[] list = { "", "K", "M", "B", "T", "Q", "Quint", "Sixt" };
         string result = "";
         string tmp = value.ToString();
         //Debug.Log(tmp.Length/4);
         if (tmp.Length / 4 == 0)
         {
-            result= tmp;
-        } else
+            result = tmp;
+        }
+        else
         {
             result = tmp.Substring(0, (tmp.Length % 4) + 1) + " " + list[tmp.Length / 4];
         }
-        return result ;
+        return result;
     }
 
     // TEST CAMERA Movement 
@@ -214,57 +158,39 @@ public class GameManager : MonoBehaviour
 
     public Vector3 direction;
 
-    void Update()
-{
-    PanCamera();
 
-    if (_underInertia && _time <= SmoothTime)
+    private void PanCamera()
     {
-        cam.transform.position += _velocity;
-        float newY = Mathf.Clamp(cam.transform.position.y, bottomLimit, topLimit);
-        cam.transform.position = new Vector3(cam.transform.position.x, newY, cam.transform.position.z);
 
-        _velocity = Vector3.Lerp(_velocity, Vector3.zero, _time);
-        _time += Time.smoothDeltaTime;
+        if (Input.GetMouseButtonDown(0))
+        {
+            touchStart = cam.ScreenToWorldPoint(Input.mousePosition);
+            _underInertia = false;
+        }
+
+        if (Input.GetMouseButton(0))
+        {
+            Vector3 _prevPosition = _curPosition;
+
+            direction = touchStart - cam.ScreenToWorldPoint(Input.mousePosition);
+            float finalYPos = cam.transform.position.y + direction.y;
+            //Debug.Log("Old: " + finalYPos);
+            finalYPos = Mathf.Clamp(finalYPos, bottomLimit, topLimit);
+            //Debug.Log("New: " + finalYPos);
+            Vector3 desiredPosition = new Vector3(cam.transform.position.x, finalYPos, cam.transform.position.z);
+            cam.transform.position = desiredPosition;
+
+            _curPosition = desiredPosition;
+            _velocity = _curPosition - _prevPosition;
+
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            _underInertia = true;
+
+        }
     }
-    else
-    {
-        _underInertia = false;
-        _time = 0.0f;
-    }
-}
 
 
-private void PanCamera()
-{
-
-    if (Input.GetMouseButtonDown(0))
-    {
-        touchStart = cam.ScreenToWorldPoint(Input.mousePosition);
-        _underInertia = false;
-    }
-
-    if (Input.GetMouseButton(0))
-    {
-        Vector3 _prevPosition = _curPosition;
-
-        direction = touchStart - cam.ScreenToWorldPoint(Input.mousePosition);
-        float finalYPos = cam.transform.position.y + direction.y;
-        //Debug.Log("Old: " + finalYPos);
-        finalYPos = Mathf.Clamp(finalYPos, bottomLimit, topLimit);
-        //Debug.Log("New: " + finalYPos);
-        Vector3 desiredPosition = new Vector3(cam.transform.position.x, finalYPos, cam.transform.position.z);
-        cam.transform.position = desiredPosition;
-
-        _curPosition = desiredPosition;
-        _velocity = _curPosition - _prevPosition;
-
-    }
-    if (Input.GetMouseButtonUp(0))
-    {
-        _underInertia = true;
-
-    }
-}
 
 }
