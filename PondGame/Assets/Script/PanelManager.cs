@@ -43,7 +43,7 @@ public class PanelManager : MonoBehaviour
         return 1;
     }
 
-    public ShopRow upgradeClick(int amount, ShopRow clickRow)
+    public (ShopRow, int) upgradeClick(int amount, ShopRow clickRow)
     {
         return gameManager.upgradeClick(amount, clickRow);
     }

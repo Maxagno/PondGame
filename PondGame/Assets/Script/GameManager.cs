@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     private int money = 0;
     private int moneyUsed = 0;
-    private int production = 0;
+    public int production = 0;
 
     private ZoneManager zoneManager;
     private Clicker clicker;
@@ -31,10 +31,14 @@ public class GameManager : MonoBehaviour
 
     // UI TEXT Variable
     public TMP_Text MoneyText;
+    public TMP_Text ProductionText;
 
     void Update()
     {
-        PanCamera();
+        if (! menuPanel.activeSelf)
+        {
+            PanCamera();
+        }
 
         if (_underInertia && _time <= SmoothTime)
         {
@@ -90,6 +94,8 @@ public class GameManager : MonoBehaviour
         zoneManager = ZoneManager.GetComponent<ZoneManager>();
         clicker = Clicker.GetComponent<Clicker>();
         Awake();
+        updateTextMoney();
+        updateTextProduction();
     }
 
     public int getMoney()
@@ -99,7 +105,8 @@ public class GameManager : MonoBehaviour
 
     public void updateProduction(int amount)
     {
-        production += amount;
+        production = amount;
+        updateTextProduction();
     }
 
     public void newFish(int id, int zoneId)
@@ -113,7 +120,7 @@ public class GameManager : MonoBehaviour
         updateTextMoney();
     }
     
-    public ShopRow upgradeClick(int amount, ShopRow clickRow)
+    public (ShopRow, int) upgradeClick(int amount, ShopRow clickRow)
     {
         return clicker.upgradeClick(amount, clickRow);
     }
@@ -122,7 +129,11 @@ public class GameManager : MonoBehaviour
     {
         MoneyText.text = "Gold: " + _getTextFromInt(money);
     }
-
+    
+    private void updateTextProduction()
+    {
+        ProductionText.text = "Gold: " + _getTextFromInt(production) + "/s";
+    }
     //Do better
     private string _getTextFromInt(int value)
     {

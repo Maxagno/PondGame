@@ -18,14 +18,12 @@ public class Clicker : MonoBehaviour
     }
 
 
-    public ShopRow upgradeClick(int amount, ShopRow row)
+    public (ShopRow, int) upgradeClick(int amount, ShopRow row)
     {
         clickLevel += amount;
-        clickRevenue = clickLevel + clickLevel * (clickCount / 1000);
-        row.setLevel(clickLevel);
-        row.setProduction(clickRevenue);
-        row.setCost(clickRevenue * 2);
-        return row;
+        clickRevenue = clickLevel + clickLevel;
+        int cost = clickRevenue * 2;
+        return (row, cost);
     }
 
     public int getClickCount() { return clickCount; }

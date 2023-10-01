@@ -14,10 +14,6 @@ public class ShopRow : MonoBehaviour
     public string fishName;
     public string fishDescription;
 
-    public int fishLevel;
-    public int fishPrice;
-    public int fishproduction;
-
     public TMP_Text Name_Text;
     public TMP_Text Level_Text;
     public TMP_Text Production_Text;
@@ -29,40 +25,33 @@ public class ShopRow : MonoBehaviour
 
     //Instantiate
 
-    public ShopRow(int id, int fishId, int zoneId, string fishName, string fishDescription, int fishproduction, int fishPrice)
+    public ShopRow(int id, int fishId, int zoneId, string fishName, string fishDescription)
     {
         this.id = id;
         this.fishId = fishId;
         this.zoneId = zoneId;
         this.fishName = fishName;
         this.fishDescription = fishDescription;
-        this.fishproduction = fishproduction;
-        this.fishPrice = fishPrice;
-        fishLevel = 0;
-        Name_Text.text = fishName;
-        Level_Text.text = fishLevel.ToString();
-        Production_Text.text = fishproduction.ToString();
-        Price_Text.text = fishPrice.ToString();
     }
 
-    public void initText()
+    public void initText(string name, int level, int production, int price)
     {
-        Name_Text.text = fishName;
-        Level_Text.text = fishLevel.ToString();
-        Production_Text.text = fishproduction.ToString();
-        Price_Text.text = fishPrice.ToString();
+        Name_Text.text = name;
+        Level_Text.text = level.ToString();
+        if (level == 0)
+        {
+            Production_Text.text = "0";
+        }
+        else
+        {
+            Production_Text.text = production.ToString();
+        }
+        Price_Text.text = price.ToString();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void UpdateCost(int cost)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Price_Text.text = cost.ToString();
     }
 
     public void notEnough()
@@ -77,21 +66,6 @@ public class ShopRow : MonoBehaviour
 
     // GETTER SETTER
 
-    public int getProduction()
-    {
-        return fishproduction;
-    }
-
-    public int getLevel()
-    {
-        return fishLevel;
-    }
-
-    public int getCost()
-    {
-        return fishPrice;
-    }
-
     public int getFishId()
     {
         return fishId;
@@ -102,19 +76,7 @@ public class ShopRow : MonoBehaviour
         return zoneId;
     }
 
-    public void setProduction(int production)
-    {
-        fishproduction = production;
-    }
-    
-    public void setCost(int cost)
-    {
-        fishPrice = cost;
-    }
-
-    public void setLevel(int level)
-    {
-        fishLevel = level;
-    }
+    public int getId()
+    { return id; }
 
 }

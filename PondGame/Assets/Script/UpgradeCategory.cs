@@ -5,17 +5,25 @@ using UnityEngine.UI;
 
 public class UpgradeCategory : MonoBehaviour
 {
-    public Fish[] list;
-
     public GameObject itemPrefab; // Référence au préfab d'article de la boutique.
+
     public List<GameObject> listRow = new List<GameObject>();
+
     public Transform content; // Référence au contenu de la ScrollView.
     public int numberOfItems = 10; // Nombre d'articles dans la boutique.
 
     public GameObject PanelManager;
     private PanelManager panelManager;
 
+
     private List<int> listOfCost = new List<int>();
+    private List<int> listOfCurrCost = new List<int>();
+
+    private List<int> listOfamountLevel = new List<int>();
+
+    private List<DataFish> listOfFish = new List<DataFish>();
+
+    private List<int> listOfProd = new List<int> ();
 
     public int amountBuy = 1;
 
@@ -28,7 +36,7 @@ public class UpgradeCategory : MonoBehaviour
 
     void Update()
     {
-        canBeBought();
+        canBeBought(amountBuy);
     }
 
     private void GenerateShopItems()
@@ -39,20 +47,30 @@ public class UpgradeCategory : MonoBehaviour
             Debug.LogError("Préfab ou contenu non défini dans le gestionnaire de boutique.");
             return;
         }
+
+        // INIT Click ROW
         GameObject newItem = Instantiate(itemPrefab, content);
+        DataFish Clicker = new DataFish(0, "Click", "", 1, 1, 1);
         ShopRow row_tmp = newItem.GetComponent<ShopRow>();
-        initClickRow(row_tmp);
+        initRow(row_tmp, Clicker, 0, 0);
         newItem.SetActive(true);
+        listOfFish.Add(Clicker);
+        Debug.Log("Level  " + Clicker.level);
         listRow.Add(newItem);
-        listOfCost.Add(1);
+        listOfCurrCost.Add(Clicker.cost);
+        listOfCost.Add(Clicker.cost);
+        listOfamountLevel.Add(1);
         // Génère les articles de la boutique.
         for (int i = 1; i < numberOfItems; i++)
         {
             // Instancie l'article de préfab.
+            DataFish fish = new DataFish(i, "NameOfFish_" + i, "", i, i, 0);
             newItem = Instantiate(itemPrefab, content);
             row_tmp = newItem.GetComponent<ShopRow>();
-            initRow(row_tmp, i, i, 1, "Test", "test", i, i);
-            listOfCost.Add(i);
+            initRow(row_tmp, fish, i, 1);
+            listOfFish.Add(fish);
+            listOfCurrCost.Add(fish.cost);
+            listOfCost.Add(fish.cost);
             // Personnalisez l'article ici en fonction de vos besoins.
             // Par exemple, définissez l'image, le nom, la description et le prix de l'article.
 
@@ -61,6 +79,8 @@ public class UpgradeCategory : MonoBehaviour
             // Assurez-vous que l'article est correctement configuré.
             newItem.SetActive(true);
             listRow.Add(newItem);
+            listOfamountLevel.Add(1);
+            listOfProd.Add(0);
         }
     }
 
@@ -69,35 +89,43 @@ public class UpgradeCategory : MonoBehaviour
     public void onClick_Row(Button button)
     {
         ShopRow clickedRow = button.transform.parent.GetComponent<ShopRow>();
-        int cost = clickedRow.getCost();
-        int result = panelManager.BuyUpgrade(cost);
+        int id = clickedRow.getId();
+        DataFish fish = listOfFish[id];
+        int level = listOfamountLevel[id];
+        int result = panelManager.BuyUpgrade(listOfCost[id]);
 
         // Can be bought
         if (result == 0)
         {
-            Debug.Log(clickedRow.getLevel());
+            int fishId = clickedRow.getFishId();
 
-            if (clickedRow.getLevel() == 0)
+            // Check if it's the click that is being upgraded
+            if (id == 0)
             {
-                panelManager.newFish(clickedRow.getFishId(), clickedRow.getZoneId());
+                (clickedRow, fish.cost) = panelManager.upgradeClick(level, clickedRow);
+                fish.level += level;
+                fish.production = fish.level * 2;
             }
-            if (clickedRow.getZoneId() == 0)
-            {
-                clickedRow = panelManager.upgradeClick(amountBuy, clickedRow);
-                listOfCost[clickedRow.getFishId()] = clickedRow.getCost();
-                clickedRow.initText();
-            } else {
-                clickedRow.setProduction(updateProduction(clickedRow.getProduction(), amountBuy));
-                cost = updateCost(cost, amountBuy);
-                listOfCost[clickedRow.id] = cost;
-                clickedRow.setCost(cost);
-                clickedRow.setLevel(updateLevel(clickedRow.getLevel(), amountBuy));
-                clickedRow.initText();
+            else 
+            { // Is it a new fish that need to be spawned 
+                if (fish.level == 0)
+                {
+                    panelManager.newFish(fishId, clickedRow.getZoneId());
+                    fish.level = level;
+                }
+                else
+                {
+                    fish.level += level;
+                }
+                fish.cost = listOfCost[id];
+                fish.production = updateProduction(fish.production, level);
+                listOfProd[id - 1] = fish.production;
+                updateProductionStat();
             }
+            listOfCurrCost[id] = listOfCost[id];
+            clickedRow.initText(fish.name, fish.level, fish.production, fish.cost);
             //panelManager.updateUpgradePrice();
         }
-        //clickedRow.fish
-        //Debug.Log(clickedRow.id);
     }
 
     public void onClick_UpdateAmount(int amount)
@@ -105,17 +133,18 @@ public class UpgradeCategory : MonoBehaviour
         amountBuy = amount;
     }
 
-    // GET SET
-
-
     // PRIVATE FUNCTION
 
-    private void canBeBought()
+    private void canBeBought(int amount = 1)
     {
+        //Debug.Log(" Amount put :  " + amount);
         int money = panelManager.getMoney();
+        updateListOfCost(amount, money);
         for (int i = 0; i < listOfCost.Count; i++)
         {
+            //Debug.Log("Cost of " + i + " : " + listOfCost[i]);
             ShopRow currRow = listRow[i].GetComponent<ShopRow>();
+            currRow.UpdateCost(listOfCost[i]);
             if (listOfCost[i] > money)
             {
                 currRow.notEnough();
@@ -126,53 +155,83 @@ public class UpgradeCategory : MonoBehaviour
         }
     }
 
-    private void initClickRow(ShopRow row)
+    private void updateListOfCost(int amount, int money)
     {
-        row.id = 0;
-        row.fishId = 0;
-        row.zoneId = 0;
-        row.fishName = "Click";
-        row.fishDescription = "Test";
-        row.fishproduction = 1;
-        row.fishPrice = 1;
-        row.fishLevel = 1;
-        row.buyButton.onClick.AddListener(delegate { onClick_Row(row.buyButton); });
-        row.initText();
+        for (int i = 0; i < listOfCurrCost.Count; i++)
+        {
+            listOfCost[i] = listOfCurrCost[i];
+            listOfamountLevel[i] = 1;
+        }
+        //listOfCost = listOfCurrCost;
+        if (amount == 10)
+        {
+            for (int i = 0;i < listOfCost.Count;i++)
+            {
+                listOfCost[i] = updateCost(listOfCost[i], amount);
+                listOfamountLevel[i] = 10;
+            }
+        } else if(amount < 0) {
+            toMax(money);
+        }
     }
-    //TODO Create another initFunc
-    private void initRow(ShopRow row, int id, int fishId, int zoneId, string name, string description, int production, int price)
+
+    private void toMax(int money)
     {
-        row.id = id;
+        for (int i = 0; i < listOfCost.Count; i++)
+        {
+            int amountOfLevel = 1;
+            int tmp = listOfCost[i];
+            while (tmp <= money)
+            {
+                tmp = updateCost(tmp, 1);
+                if (tmp <= money)
+                {
+                    listOfCost[i] = tmp;
+                    amountOfLevel++;
+                }
+            }
+            listOfamountLevel[i] = amountOfLevel;
+        }
+    }
+
+    //TODO Create another initFunc
+    private void initRow(ShopRow row, DataFish fish, int fishId, int zoneId)
+    {
+        row.id = fish.id;
         row.fishId = fishId;
         row.zoneId = zoneId;
-        row.fishName = name;
-        row.fishDescription = description;
-        row.fishproduction = production;
-        row.fishPrice = price;
-        row.fishLevel = 0;
+        row.fishName = fish.name;
+        row.fishDescription = fish.description;
         row.buyButton.onClick.AddListener(delegate { onClick_Row(row.buyButton); });
-        row.initText();
+        row.initText(fish.name, fish.level, fish.production, fish.cost);
     }
 
 
     private int updateProduction(int production, int amount_lvlUp = 1) 
     {
-        int tmp = production;
-        production += amount_lvlUp;
-        tmp = production - tmp;
-        panelManager.updateProduction(tmp);
+        for (int i = 0; i < amount_lvlUp; i++)
+        {
+            production = production + 1;
+        }
         return production;
     }
 
     private int updateCost(int cost, int amount_lvlUp = 1)
     {
-        cost += ((cost/20) + 2 + amount_lvlUp) * 2;
+        for (int i = 0; i < amount_lvlUp; i++)
+        {
+            cost += 1;
+        }
         return cost;
     }
 
-    private int updateLevel(int level, int amount_lvlUp = 1)
+    private void updateProductionStat()
     {
-        level += amount_lvlUp;
-        return level;
+        int amount = 0;
+        for(int i = 0; i < listOfProd.Count; i++)
+        {
+            amount += listOfProd[i];
+        }
+        panelManager.updateProduction(amount);
     }
 }
