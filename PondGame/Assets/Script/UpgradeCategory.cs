@@ -15,7 +15,6 @@ public class UpgradeCategory : MonoBehaviour
     public GameObject PanelManager;
     private PanelManager panelManager;
 
-
     private List<int> listOfCost = new List<int>();
     private List<int> listOfCurrCost = new List<int>();
 
