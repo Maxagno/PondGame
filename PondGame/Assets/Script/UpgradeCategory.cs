@@ -116,14 +116,13 @@ public class UpgradeCategory : MonoBehaviour
                 {
                     fish.level += level;
                 }
-                fish.cost = listOfCost[id];
+                fish.cost = updateCost(listOfCost[id]);
                 fish.production = updateProduction(fish.production, level);
                 listOfProd[id - 1] = fish.production;
                 updateProductionStat();
             }
-            listOfCurrCost[id] = listOfCost[id];
+            listOfCurrCost[id] = fish.cost;
             clickedRow.initText(fish.name, fish.level, fish.production, fish.cost);
-            //panelManager.updateUpgradePrice();
         }
     }
 
