@@ -51,6 +51,13 @@ MonoBehaviour:
   name: ZonedeTest
   description: TestingZone
   fishManager: {fileID: 5672139085154421008}
+  listSprite:
+  - {fileID: 21300000, guid: be0fee3c8c32afb4f93ba27891835f99, type: 3}
+  - {fileID: 21300000, guid: 2663238005b9e3c4a93eae3dd7c45aa2, type: 3}
+  - {fileID: 21300000, guid: 0a00f290a97626b46a11c965b0e1f53f, type: 3}
+  - {fileID: 21300000, guid: 5cdcde52c5acb32478119b075a031955, type: 3}
+  - {fileID: 21300000, guid: b583fbc079869ed47b9e2cde77109d67, type: 3}
+  - {fileID: 21300000, guid: f168a8be288954547835a24b94de453e, type: 3}
 --- !u!1 &1220516283919064014
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,6 +225,7 @@ MonoBehaviour:
   - {fileID: 6977624138555318943}
   - {fileID: 1232451506439256497}
   - {fileID: 5260067896127984190}
+  listSprite: []
 --- !u!1 &1362187136473704172
 GameObject:
   m_ObjectHideFlags: 0

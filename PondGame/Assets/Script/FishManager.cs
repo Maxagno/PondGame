@@ -15,21 +15,16 @@ public class FishManager : MonoBehaviour
     private List<Fish> listValueFish = new List<Fish>();
     private List<int> listID = new List<int>();
 
+    public List<Sprite> listSprite = new List<Sprite>();
+
     private int nbrFish;
 
-    public void initFishManager(int nbrFish)
+    public void initFishManager(int nbrFish, List<Sprite> listsprite)
     {
-        nbrFish = nbrFish;
-        for (int i = 0; i < nbrFish; i++)
+        for (int i = 0; i < listsprite.Count; i++)
         {
-            listValueFish.Add(new Fish(i, "Test"));
+            listSprite.Add(listsprite[i]);
         }
-    }
-
-    public void initFish()
-    {
-        listValueFish.Add(new Fish(0, "Test"));
-        buyFish(0);
     }
     
     // Start is called before the first frame update
@@ -48,7 +43,7 @@ public class FishManager : MonoBehaviour
     {
         GameObject fishTMP = Instantiate(_prefabFish);
         Fish fish = fishTMP.GetComponent<Fish>();
-
+        fish.setImg(listSprite[id]);
         fishTMP.transform.position = spawnPoint[id].transform.position;
         Debug.Log(spawnPoint[id].name);
 

@@ -8,7 +8,8 @@ public class Zone : MonoBehaviour
     public string name;
     public string description;
     public FishManager fishManager;
-    
+    public List<Sprite> listSprite = new List<Sprite>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +23,7 @@ public class Zone : MonoBehaviour
 
     public void initZone(int amount)
     {
-        fishManager.initFishManager(amount);
+        fishManager.initFishManager(amount, listSprite);
     }
 
     public void buyFish(int id)

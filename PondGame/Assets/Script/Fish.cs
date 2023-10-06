@@ -8,6 +8,8 @@ public class Fish : MonoBehaviour
     public string name;
     public string description;
 
+    public Sprite image;
+    public SpriteRenderer sprite;
 
     // Private Attribute 
 
@@ -20,12 +22,15 @@ public class Fish : MonoBehaviour
 
 
 
-    public Fish(int new_id, string new_name, string new_description = "")
+    public Fish(int new_id, string new_name, Sprite img, string new_description = "")
     {
         id = new_id;
         name = new_name;
         description = new_description;
-
+        if (img != null)
+        {
+            sprite.sprite = img;
+        }
     }
 
 
@@ -84,5 +89,9 @@ public class Fish : MonoBehaviour
         return id;
     }
 
+    public void setImg(Sprite image)
+    {
+        sprite.sprite = image;
+    }
 
 }

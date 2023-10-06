@@ -40,8 +40,9 @@ public class ZoneManager : MonoBehaviour
 
     public void newFish(int fishId, int zoneId)
     {
-        list_Zone[zoneId - 1].GetComponent<Zone>().buyFish(fishId);
         Debug.Log("Here in the Zone manager IdZone:  " + zoneId);
+        list_Zone[zoneId - 1].GetComponent<Zone>().buyFish(fishId);
+        
     }
 
 
