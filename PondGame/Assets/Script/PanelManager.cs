@@ -33,6 +33,11 @@ public class PanelManager : MonoBehaviour
         
     }
 
+    public void initialisePanelManager(List<InitInfo> initInfos)
+    {
+        List<InitInfo> infoToUpgrade = buyCategory.initialiseBuyCategory(initInfos);
+    }
+
     public int BuyUpgrade(int cost)
     {
         int money = gameManager.getMoney();

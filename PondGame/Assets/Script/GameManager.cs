@@ -97,6 +97,7 @@ public class GameManager : MonoBehaviour
         clicker = Clicker.GetComponent<Clicker>();
         panelManager = PanelManager.GetComponent<PanelManager>();
         List<InitInfo> infoForPanel = zoneManager.initialiseZoneManager();
+        panelManager.initialisePanelManager(infoForPanel);
         Awake();
         updateTextMoney();
         updateTextProduction();

@@ -54,7 +54,7 @@ public class ZoneManager : MonoBehaviour
             GameObject zoneTMP = Instantiate(list_PrefabZone[0]);
             Zone zone = zoneTMP.GetComponent<Zone>();
             List<GameObject> blockObjectZone = zone.initZone(4);
-            temporaryVar.initInfoZone(i, 4);
+            temporaryVar.initInfoZone(i, 4, zone.name);
             // Adding the link between each block and the id of the fish that will be spawned
             List<(int, int)> listLinkBlock2Fish = new List<(int, int)>();
             for (int j = 0; j < blockObjectZone.Count && j < 4; j++)

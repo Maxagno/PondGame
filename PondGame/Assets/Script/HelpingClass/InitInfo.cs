@@ -5,6 +5,7 @@ using UnityEngine;
 public class InitInfo : MonoBehaviour
 {
     public int zoneId;
+    public string zoneName;
     public int fishId;
     public int rowId;
     public int cost;
@@ -24,10 +25,11 @@ public class InitInfo : MonoBehaviour
         this.rowId = rowId;
     }
 
-    public void initInfoZone(int zoneId, int fishId)
+    public void initInfoZone(int zoneId, int fishId, string zoneName)
     {
         this.zoneId = zoneId;
         this.fishId = fishId;
+        this.zoneName = zoneName;
         listOfLink = new List<doubleInt> ();
     }
 

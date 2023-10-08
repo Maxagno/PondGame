@@ -18,7 +18,7 @@ public class BuyCategory : MonoBehaviour
     void Start()
     {
         // Crée les articles de la boutique et les ajoute à la ScrollView.
-        GenerateShopItems();
+        //GenerateShopItems();
         panelManager = PanelManager.GetComponent<PanelManager>();
     }
 
@@ -53,6 +53,7 @@ public class BuyCategory : MonoBehaviour
 
     public List<InitInfo> initialiseBuyCategory(List<InitInfo> infoForPanel)
     {
+        Debug.Log("Number of initInfo : " + infoForPanel.Count);
         List<InitInfo> result = new List<InitInfo>();
         if (itemPrefab == null || content == null)
         {
@@ -60,25 +61,26 @@ public class BuyCategory : MonoBehaviour
             return result;
         }
 
-        // INIT Click ROW
-        GameObject newItem = Instantiate(itemPrefab, content);
-        newItem.SetActive(true);
-        listRow.Add(newItem);
-
+        int idForRow = 0;
         for (int i = 0; i < infoForPanel.Count; i++)
         {
             InitInfo currInfo = infoForPanel[i];
-            /*newItem = Instantiate(itemPrefab, content);
+            GameObject newItem = Instantiate(itemPrefab, content);
+            UnlockRow uRow = newItem.GetComponent<UnlockRow>();
+            uRow.initUnlockRow(idForRow, currInfo.zoneName, "description", "short / Unlock The Zone ", idForRow);
+            idForRow++;
             newItem.SetActive(true);
-            listRow.Add(newItem);*/
+            listRow.Add(newItem);
             List<doubleInt> listOfLink = currInfo.listOfLink;
+            Debug.Log("Currinfo list of link count : " + currInfo.listOfLink.Count);
+            Debug.Log("Here is the number for the zone " + i + " : " + listOfLink.Count);
             for (int j = 0; j < listOfLink.Count; j++)
             {
                 InitInfo temp = new InitInfo();
                 temp.initInfoRow(currInfo.zoneId, listOfLink[j].item1, listOfLink[j].item2, ((j * i) + 5));
                 newItem = Instantiate(itemPrefab, content);
-                UnlockRow uRow = newItem.GetComponent<UnlockRow>();
-                uRow.price = (j * i) + 5;
+                uRow = newItem.GetComponent<UnlockRow>();
+                uRow.initUnlockRow(idForRow, currInfo.zoneName, "description", "short", idForRow);
                 newItem.SetActive(true);
                 listRow.Add(newItem);
                 result.Add(temp);

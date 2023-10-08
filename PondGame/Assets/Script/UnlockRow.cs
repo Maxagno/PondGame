@@ -25,13 +25,14 @@ public class UnlockRow : MonoBehaviour
     public Button buyButton;
 
 
-    public UnlockRow(int id, string name, string description, string short_description, int price)
+    public void initUnlockRow(int id, string name, string description, string short_description, int price)
     {
         this.id = id;
         this.name = name;
         this.description = description;
         this.short_description = short_description;
         this.price = price;
+        initText();
     }
     // Start is called before the first frame update
     void Start()
