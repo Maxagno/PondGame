@@ -41,6 +41,7 @@ public class FishManager : MonoBehaviour
 
     public void buyFish(int id)
     {
+        Debug.Log("" + id);
         GameObject fishTMP = Instantiate(_prefabFish);
         Fish fish = fishTMP.GetComponent<Fish>();
         fish.setImg(listSprite[id]);

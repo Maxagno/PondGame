@@ -36,6 +36,7 @@ public class PanelManager : MonoBehaviour
     public void initialisePanelManager(List<InitInfo> initInfos)
     {
         List<InitInfo> infoToUpgrade = buyCategory.initialiseBuyCategory(initInfos);
+        upgradeCategory.initialiseUpgradeCategory(infoToUpgrade);
     }
 
     public int BuyUpgrade(int cost)

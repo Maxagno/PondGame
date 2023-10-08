@@ -29,7 +29,7 @@ public class UpgradeCategory : MonoBehaviour
     private void Start()
     {
         // Crée les articles de la boutique et les ajoute à la ScrollView.
-        GenerateShopItems();
+        //GenerateShopItems();
         panelManager = PanelManager.GetComponent<PanelManager>();
     }
 
@@ -51,7 +51,7 @@ public class UpgradeCategory : MonoBehaviour
         GameObject newItem = Instantiate(itemPrefab, content);
         DataFish Clicker = new DataFish(-1, "Click", "", 1, 1, 1);
         ShopRow row_tmp = newItem.GetComponent<ShopRow>();
-        initRow(row_tmp, Clicker, 0, 0);
+        initRow(row_tmp, Clicker, -1, -1);
         newItem.SetActive(true);
         listOfFish.Add(Clicker);
         Debug.Log("Level  " + Clicker.level);
@@ -82,8 +82,52 @@ public class UpgradeCategory : MonoBehaviour
             listOfProd.Add(0);
         }
     }
+    public void initialiseUpgradeCategory(List<InitInfo> initInfos)
+    {
+        // Assurez-vous que le préfab d'article et le contenu sont définis.
+        if (itemPrefab == null || content == null)
+        {
+            Debug.LogError("Préfab ou contenu non défini dans le gestionnaire de boutique.");
+            return;
+        }
 
-    
+        // INIT Click ROW
+        GameObject newItem = Instantiate(itemPrefab, content);
+        DataFish Clicker = new DataFish(-1, "Click", "", 1, 1, 1);
+        ShopRow row_tmp = newItem.GetComponent<ShopRow>();
+        initRow(row_tmp, Clicker, -1, -1);
+        newItem.SetActive(true);
+        listOfFish.Add(Clicker);
+        Debug.Log("Level  " + Clicker.level);
+        listRow.Add(newItem);
+        listOfCurrCost.Add(Clicker.cost);
+        listOfCost.Add(Clicker.cost);
+        listOfamountLevel.Add(1);
+
+
+        // Adding the rest of the possible fish to buy
+        for (int i = 0; i < initInfos.Count; i++)
+        {
+            // Instantiate the prefab
+            InitInfo currRow = initInfos[i];
+            DataFish fish = new DataFish(i, "NameOfFish_" + i, "", i, i, 0);
+            newItem = Instantiate(itemPrefab, content);
+            row_tmp = newItem.GetComponent<ShopRow>();
+            initRow(row_tmp, fish, currRow.fishId, currRow.zoneId);
+            newItem.SetActive(true);
+
+            listOfFish.Add(fish);
+            listOfCurrCost.Add(fish.cost);
+            listOfCost.Add(fish.cost);
+
+            
+            listRow.Add(newItem);
+            listOfamountLevel.Add(1);
+            listOfProd.Add(0);
+        }
+    }
+
+
 
     public void onClick_Row(Button button)
     {

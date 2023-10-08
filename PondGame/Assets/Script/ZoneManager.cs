@@ -41,7 +41,7 @@ public class ZoneManager : MonoBehaviour
     public void newFish(int fishId, int zoneId)
     {
         Debug.Log("Here in the Zone manager IdZone:  " + zoneId);
-        list_Zone[zoneId - 1].GetComponent<Zone>().buyFish(fishId);
+        list_Zone[zoneId].GetComponent<Zone>().buyFish(fishId);
         
     }
 
@@ -54,8 +54,10 @@ public class ZoneManager : MonoBehaviour
             GameObject zoneTMP = Instantiate(list_PrefabZone[0]);
             Zone zone = zoneTMP.GetComponent<Zone>();
             List<GameObject> blockObjectZone = zone.initZone(4);
+            Debug.Log("Count of BlockObjectZone : " + blockObjectZone.Count);
             temporaryVar.initInfoZone(i, 4, zone.name);
-            // Adding the link between each block and the id of the fish that will be spawned
+
+            // Adding the link between each block and the id of the fish that is being blocked
             List<(int, int)> listLinkBlock2Fish = new List<(int, int)>();
             for (int j = 0; j < blockObjectZone.Count && j < 4; j++)
             {

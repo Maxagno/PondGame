@@ -64,11 +64,15 @@ public class BuyCategory : MonoBehaviour
         int idForRow = 0;
         for (int i = 0; i < infoForPanel.Count; i++)
         {
+            InitInfo temp = new InitInfo();
             InitInfo currInfo = infoForPanel[i];
             GameObject newItem = Instantiate(itemPrefab, content);
             UnlockRow uRow = newItem.GetComponent<UnlockRow>();
+            uRow.buyButton.onClick.AddListener(delegate { onClick_Row(newItem); });
             uRow.initUnlockRow(idForRow, currInfo.zoneName, "description", "short / Unlock The Zone ", idForRow);
             idForRow++;
+            temp.initInfoRow(currInfo.zoneId, currInfo.fishId, idForRow, idForRow);
+            result.Add(temp);
             newItem.SetActive(true);
             listRow.Add(newItem);
             List<doubleInt> listOfLink = currInfo.listOfLink;
@@ -76,7 +80,7 @@ public class BuyCategory : MonoBehaviour
             Debug.Log("Here is the number for the zone " + i + " : " + listOfLink.Count);
             for (int j = 0; j < listOfLink.Count; j++)
             {
-                InitInfo temp = new InitInfo();
+                temp = new InitInfo();
                 temp.initInfoRow(currInfo.zoneId, listOfLink[j].item1, listOfLink[j].item2, ((j * i) + 5));
                 newItem = Instantiate(itemPrefab, content);
                 uRow = newItem.GetComponent<UnlockRow>();
@@ -88,5 +92,16 @@ public class BuyCategory : MonoBehaviour
         }
         return result;
     }
-    
+
+    public void onClick_Row(GameObject row)
+    {
+        UnlockRow clickedRow = row.GetComponent<UnlockRow>();
+        int id = clickedRow.getId();
+        int result = panelManager.BuyUpgrade(clickedRow.getPrice());
+        if (result == 0)
+        {
+            row.SetActive(false);
+        }
+    }
+
 }

@@ -7,6 +7,7 @@ public class InitInfo : MonoBehaviour
     public int zoneId;
     public string zoneName;
     public int fishId;
+    public int nbrFish;
     public int rowId;
     public int cost;
     public List<doubleInt> listOfLink;
@@ -25,10 +26,10 @@ public class InitInfo : MonoBehaviour
         this.rowId = rowId;
     }
 
-    public void initInfoZone(int zoneId, int fishId, string zoneName)
+    public void initInfoZone(int zoneId, int nbrFish, string zoneName)
     {
         this.zoneId = zoneId;
-        this.fishId = fishId;
+        this.nbrFish = nbrFish;
         this.zoneName = zoneName;
         listOfLink = new List<doubleInt> ();
     }

@@ -58,13 +58,21 @@ public class UnlockRow : MonoBehaviour
         Price_Text.text = cost.ToString();
     }
 
-    public void notEnough()
+    public void canNotBeBought()
     {
         buyButton.interactable = false;
     }
 
-    public void enough()
+    public void canBeBought()
     {
         buyButton.interactable = true;
     }
+
+    // GET SET FUNCTION 
+
+    public int getId() { return id; }
+    public string getName() { return name; }
+    public string getDescription() { return description; }
+    public int getPrice() { return price; }
+
 }
