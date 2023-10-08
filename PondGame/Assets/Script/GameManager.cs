@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
-    public GameObject menuPanel;
+    public GameObject PanelManager;
     public GameObject Clicker;
     public GameObject ZoneManager;
 
@@ -27,15 +27,17 @@ public class GameManager : MonoBehaviour
 
     private ZoneManager zoneManager;
     private Clicker clicker;
+    private PanelManager panelManager;
 
 
     // UI TEXT Variable
     public TMP_Text MoneyText;
     public TMP_Text ProductionText;
 
+
     void Update()
     {
-        if (! menuPanel.activeSelf)
+        if (! PanelManager.activeSelf)
         {
             PanCamera();
         }
@@ -93,6 +95,8 @@ public class GameManager : MonoBehaviour
     {
         zoneManager = ZoneManager.GetComponent<ZoneManager>();
         clicker = Clicker.GetComponent<Clicker>();
+        panelManager = PanelManager.GetComponent<PanelManager>();
+        List<InitInfo> infoForPanel = zoneManager.initialiseZoneManager();
         Awake();
         updateTextMoney();
         updateTextProduction();

@@ -49,7 +49,42 @@ public class BuyCategory : MonoBehaviour
             newItem.SetActive(true);
             listRow.Add(newItem);
         }
-        
+    }
+
+    public List<InitInfo> initialiseBuyCategory(List<InitInfo> infoForPanel)
+    {
+        List<InitInfo> result = new List<InitInfo>();
+        if (itemPrefab == null || content == null)
+        {
+            Debug.LogError("Préfab ou contenu non défini dans le gestionnaire de boutique.");
+            return result;
+        }
+
+        // INIT Click ROW
+        GameObject newItem = Instantiate(itemPrefab, content);
+        newItem.SetActive(true);
+        listRow.Add(newItem);
+
+        for (int i = 0; i < infoForPanel.Count; i++)
+        {
+            InitInfo currInfo = infoForPanel[i];
+            /*newItem = Instantiate(itemPrefab, content);
+            newItem.SetActive(true);
+            listRow.Add(newItem);*/
+            List<doubleInt> listOfLink = currInfo.listOfLink;
+            for (int j = 0; j < listOfLink.Count; j++)
+            {
+                InitInfo temp = new InitInfo();
+                temp.initInfoRow(currInfo.zoneId, listOfLink[j].item1, listOfLink[j].item2, ((j * i) + 5));
+                newItem = Instantiate(itemPrefab, content);
+                UnlockRow uRow = newItem.GetComponent<UnlockRow>();
+                uRow.price = (j * i) + 5;
+                newItem.SetActive(true);
+                listRow.Add(newItem);
+                result.Add(temp);
+            }
+        }
+        return result;
     }
     
 }

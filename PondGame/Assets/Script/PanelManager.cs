@@ -8,13 +8,14 @@ public class PanelManager : MonoBehaviour
 {
 
     public GameObject UpgradePanel;
-    public GameObject BuyPanel;
+    public GameObject BuyCategory;
     public GameObject MenuPanel;
 
     public GameObject Clicker;
     public GameObject GameManager;
 
     private UpgradeCategory upgradeCategory;
+    private BuyCategory buyCategory;
     private GameManager gameManager;
 
 
@@ -22,6 +23,7 @@ public class PanelManager : MonoBehaviour
     void Start()
     {
         upgradeCategory = UpgradePanel.GetComponent<UpgradeCategory>();
+        buyCategory = BuyCategory.GetComponent<BuyCategory>();
         gameManager = GameManager.GetComponent<GameManager>();
     }
 
@@ -106,12 +108,12 @@ public class PanelManager : MonoBehaviour
             {
                 MenuPanel.SetActive(true);
                 UpgradePanel.SetActive(true);
-                BuyPanel.SetActive(false);
+                BuyCategory.SetActive(false);
             }
         }
         if (button.name == "BuyCategoryButton")
         {
-            if (BuyPanel.activeSelf)
+            if (BuyCategory.activeSelf)
             {
                 if (MenuPanel.activeSelf)
                 {
@@ -125,7 +127,7 @@ public class PanelManager : MonoBehaviour
             else
             {
                 MenuPanel.SetActive(true);
-                BuyPanel.SetActive(true);
+                BuyCategory.SetActive(true);
                 UpgradePanel.SetActive(false);
             }
         }

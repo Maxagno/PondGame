@@ -21,17 +21,20 @@ public class ShopRow : MonoBehaviour
 
     public Button buyButton;
 
+    public bool isLocked = true;
+
     //Public image for thumbnail
 
     //Instantiate
 
-    public ShopRow(int id, int fishId, int zoneId, string fishName, string fishDescription)
+    public ShopRow(int id, int fishId, int zoneId, string fishName, string fishDescription, bool isLocked = true)
     {
         this.id = id;
         this.fishId = fishId;
         this.zoneId = zoneId;
         this.fishName = fishName;
         this.fishDescription = fishDescription;
+        isLocked = isLocked;
     }
 
     public void initText(string name, int level, int production, int price)
@@ -54,12 +57,12 @@ public class ShopRow : MonoBehaviour
         Price_Text.text = cost.ToString();
     }
 
-    public void notEnough()
+    public void canNotBeBought()
     {
         buyButton.interactable = false;
     }
 
-    public void enough()
+    public void canBeBought()
     {
         buyButton.interactable = true;
     }
@@ -78,5 +81,15 @@ public class ShopRow : MonoBehaviour
 
     public int getId()
     { return id; }
+
+    public bool getIsLocked()
+    {
+        return isLocked;
+    }
+
+    public void setUnlocked()
+    {
+        isLocked = false;
+    }
 
 }

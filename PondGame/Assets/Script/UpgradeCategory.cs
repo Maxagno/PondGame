@@ -49,7 +49,7 @@ public class UpgradeCategory : MonoBehaviour
 
         // INIT Click ROW
         GameObject newItem = Instantiate(itemPrefab, content);
-        DataFish Clicker = new DataFish(0, "Click", "", 1, 1, 1);
+        DataFish Clicker = new DataFish(-1, "Click", "", 1, 1, 1);
         ShopRow row_tmp = newItem.GetComponent<ShopRow>();
         initRow(row_tmp, Clicker, 0, 0);
         newItem.SetActive(true);
@@ -60,7 +60,7 @@ public class UpgradeCategory : MonoBehaviour
         listOfCost.Add(Clicker.cost);
         listOfamountLevel.Add(1);
         // Génère les articles de la boutique.
-        for (int i = 1; i < numberOfItems; i++)
+        for (int i = 0; i < numberOfItems; i++)
         {
             // Instancie l'article de préfab.
             DataFish fish = new DataFish(i, "NameOfFish_" + i, "", i, i, 0);
@@ -89,9 +89,9 @@ public class UpgradeCategory : MonoBehaviour
     {
         ShopRow clickedRow = button.transform.parent.GetComponent<ShopRow>();
         int id = clickedRow.getId();
-        DataFish fish = listOfFish[id];
-        int level = listOfamountLevel[id];
-        int result = panelManager.BuyUpgrade(listOfCost[id]);
+        DataFish fish = listOfFish[id + 1];
+        int level = listOfamountLevel[id+1];
+        int result = panelManager.BuyUpgrade(listOfCost[id+1]);
 
         // Can be bought
         if (result == 0)
@@ -99,7 +99,7 @@ public class UpgradeCategory : MonoBehaviour
             int fishId = clickedRow.getFishId();
 
             // Check if it's the click that is being upgraded
-            if (id == 0)
+            if (id == -1)
             {
                 (clickedRow, fish.cost) = panelManager.upgradeClick(level, clickedRow);
                 fish.level += level;
@@ -116,12 +116,12 @@ public class UpgradeCategory : MonoBehaviour
                 {
                     fish.level += level;
                 }
-                fish.cost = updateCost(listOfCost[id]);
+                fish.cost = updateCost(listOfCost[id+1]);
                 fish.production = updateProduction(fish.production, level);
-                listOfProd[id - 1] = fish.production;
+                listOfProd[id] = fish.production;
                 updateProductionStat();
             }
-            listOfCurrCost[id] = fish.cost;
+            listOfCurrCost[id+1] = fish.cost;
             clickedRow.initText(fish.name, fish.level, fish.production, fish.cost);
         }
     }
@@ -143,12 +143,12 @@ public class UpgradeCategory : MonoBehaviour
             //Debug.Log("Cost of " + i + " : " + listOfCost[i]);
             ShopRow currRow = listRow[i].GetComponent<ShopRow>();
             currRow.UpdateCost(listOfCost[i]);
-            if (listOfCost[i] > money)
+            if (listOfCost[i] > money || currRow.getIsLocked())
             {
-                currRow.notEnough();
+                currRow.canNotBeBought();
             } else
             {
-                currRow.enough();
+                currRow.canBeBought();
             }
         }
     }
