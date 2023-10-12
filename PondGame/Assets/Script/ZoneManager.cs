@@ -50,23 +50,13 @@ public class ZoneManager : MonoBehaviour
         List<InitInfo> result = new List<InitInfo>();
         for (int i = 0; i < numberOfZone; i++)
         {
-            InitInfo temporaryVar = new InitInfo();
+            // Init the zone
             GameObject zoneTMP = Instantiate(list_PrefabZone[0]);
             Zone zone = zoneTMP.GetComponent<Zone>();
-            List<GameObject> blockObjectZone = zone.initZone(4);
-            Debug.Log("Count of BlockObjectZone : " + blockObjectZone.Count);
-            temporaryVar.initInfoZone(i, 4, zone.name);
+            InitInfo temporaryVar = zone.initZone(4);
 
-            // Adding the link between each block and the id of the fish that is being blocked
-            List<(int, int)> listLinkBlock2Fish = new List<(int, int)>();
-            for (int j = 0; j < blockObjectZone.Count && j < 4; j++)
-            {
-                doubleInt temp = new doubleInt();
-                temp.init(j, j);
-                temporaryVar.listOfLink.Add(temp);
-            }
+            // Init position
             zoneTMP.transform.position = new Vector3(0, last_y, 0);
-            Renderer rend = zoneTMP.GetComponent<Renderer>();
             list_Zone.Add(zoneTMP);
             last_y += -17;
             result.Add(temporaryVar);

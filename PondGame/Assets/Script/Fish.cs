@@ -7,6 +7,7 @@ public class Fish : MonoBehaviour
     public int id;
     public string name;
     public string description;
+    public string shortDescription;
 
     public Sprite image;
     public SpriteRenderer sprite;
@@ -22,11 +23,12 @@ public class Fish : MonoBehaviour
 
 
 
-    public Fish(int new_id, string new_name, Sprite img, string new_description = "")
+    public Fish(int new_id, string new_name, Sprite img, string new_description, string shortdescription)
     {
         id = new_id;
         name = new_name;
         description = new_description;
+        shortDescription = shortdescription;
         if (img != null)
         {
             sprite.sprite = img;
