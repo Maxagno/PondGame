@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class InitInfo : MonoBehaviour
 {
+    // INFO FOR InitInfoZone
     public int zoneId;
     public string zoneName;
-    public int fishId;
-    public int nbrFish;
+    public List<InitInfoFish> listInfoFish;
+
+    // INFO FOR InitInfoRow
+
     public int rowId;
-    public int cost;
-    public List<doubleInt> listOfLink;
+    //public List<InitInfoFish> infoFish;
 
     // Start is called before the first frame update
     void Start()
@@ -18,20 +20,19 @@ public class InitInfo : MonoBehaviour
         
     }
 
-    public void initInfoRow(int zoneId, int fishId, int cost, int rowId)
+    public void initInfoRow(int zoneId, int rowId)
     {
         this.zoneId = zoneId;
-        this.fishId = fishId;
-        this.cost = cost;
         this.rowId = rowId;
+        listInfoFish = new List<InitInfoFish>();
+
     }
 
-    public void initInfoZone(int zoneId, int nbrFish, string zoneName)
+    public void initInfoZone(int zoneId, string zoneName)
     {
         this.zoneId = zoneId;
-        this.nbrFish = nbrFish;
         this.zoneName = zoneName;
-        listOfLink = new List<doubleInt> ();
+        listInfoFish = new List<InitInfoFish>();
     }
 
     // Update is called once per frame
