@@ -97,8 +97,12 @@ public class UpgradeCategory : MonoBehaviour
         ShopRow row_tmp = newItem.GetComponent<ShopRow>();
         initRow(row_tmp, Clicker, -1, -1);
         newItem.SetActive(true);
-        listOfFish.Add(Clicker);
+        
+
         Debug.Log("Level  " + Clicker.level);
+
+        // ADDING THE ROW TO ALL LIST
+        listOfFish.Add(Clicker);
         listRow.Add(newItem);
         listOfCurrCost.Add(Clicker.cost);
         listOfCost.Add(Clicker.cost);
@@ -110,20 +114,27 @@ public class UpgradeCategory : MonoBehaviour
         {
             // Instantiate the prefab
             InitInfo currRow = initInfos[i];
-            DataFish fish = new DataFish(i, "NameOfFish_" + i, "", i, i, 0);
-            newItem = Instantiate(itemPrefab, content);
-            row_tmp = newItem.GetComponent<ShopRow>();
-            initRow(row_tmp, fish, currRow.fishId, currRow.zoneId);
-            newItem.SetActive(true);
+            if (currRow.listInfoFish.Count != 0)
+            {
+                // GET THE INFO FOR THE ROW
+                InitInfoFish infoFishTMP = currRow.listInfoFish[0];
 
-            listOfFish.Add(fish);
-            listOfCurrCost.Add(fish.cost);
-            listOfCost.Add(fish.cost);
+                DataFish fish = new DataFish(i, infoFishTMP.fishName, infoFishTMP.fishDescription, i, i, 0);
 
-            
-            listRow.Add(newItem);
-            listOfamountLevel.Add(1);
-            listOfProd.Add(0);
+                newItem = Instantiate(itemPrefab, content);
+                row_tmp = newItem.GetComponent<ShopRow>();
+                initRow(row_tmp, fish, infoFishTMP.fishId, currRow.zoneId);
+                newItem.SetActive(true);
+
+                listOfFish.Add(fish);
+                listOfCurrCost.Add(fish.cost);
+                listOfCost.Add(fish.cost);
+
+
+                listRow.Add(newItem);
+                listOfamountLevel.Add(1);
+                listOfProd.Add(0);
+            }
         }
     }
 

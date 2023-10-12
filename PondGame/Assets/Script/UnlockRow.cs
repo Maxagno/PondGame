@@ -22,6 +22,8 @@ public class UnlockRow : MonoBehaviour
 
     public GameObject image;
 
+    public GameObject blockObject;
+
     public Button buyButton;
 
 
@@ -33,6 +35,7 @@ public class UnlockRow : MonoBehaviour
         this.short_description = short_description;
         this.price = price;
         initText();
+        blockObject = null;
     }
     // Start is called before the first frame update
     void Start()
@@ -44,6 +47,11 @@ public class UnlockRow : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void setBlock(GameObject blockObject)
+    {
+        this.blockObject = blockObject;
     }
 
     public void initText()

@@ -54,43 +54,72 @@ public class BuyCategory : MonoBehaviour
     public List<InitInfo> initialiseBuyCategory(List<InitInfo> infoForPanel)
     {
         Debug.Log("Number of initInfo : " + infoForPanel.Count);
-        List<InitInfo> result = new List<InitInfo>();
+
+        List<InitInfo> resultInit = new List<InitInfo>();
+        
         if (itemPrefab == null || content == null)
         {
             Debug.LogError("Préfab ou contenu non défini dans le gestionnaire de boutique.");
-            return result;
+            return resultInit;
         }
 
         int idForRow = 0;
         for (int i = 0; i < infoForPanel.Count; i++)
         {
             InitInfo temp = new InitInfo();
+
             InitInfo currInfo = infoForPanel[i];
+            
             GameObject newItem = Instantiate(itemPrefab, content);
+            
+            // INIT THE ROW TO UNLOCK THE ZONE
             UnlockRow uRow = newItem.GetComponent<UnlockRow>();
             uRow.buyButton.onClick.AddListener(delegate { onClick_Row(newItem); });
             uRow.initUnlockRow(idForRow, currInfo.zoneName, "description", "short / Unlock The Zone ", idForRow);
+            temp.initInfoRow(currInfo.zoneId, idForRow);
             idForRow++;
-            temp.initInfoRow(currInfo.zoneId, currInfo.fishId, idForRow, idForRow);
-            result.Add(temp);
             newItem.SetActive(true);
             listRow.Add(newItem);
-            List<doubleInt> listOfLink = currInfo.listOfLink;
-            Debug.Log("Currinfo list of link count : " + currInfo.listOfLink.Count);
-            Debug.Log("Here is the number for the zone " + i + " : " + listOfLink.Count);
-            for (int j = 0; j < listOfLink.Count; j++)
+
+            // ADD THE NEW INFO TO THE RESULT
+            resultInit.Add(temp);
+
+
+
+            List<InitInfoFish> listInfoFish = currInfo.listInfoFish;
+
+
+            // CREATING THE ROW TO UNLOCK NEW FISH
+            for (int j = 0; j < listInfoFish.Count; j++)
             {
-                temp = new InitInfo();
-                temp.initInfoRow(currInfo.zoneId, listOfLink[j].item1, listOfLink[j].item2, ((j * i) + 5));
-                newItem = Instantiate(itemPrefab, content);
-                uRow = newItem.GetComponent<UnlockRow>();
-                uRow.initUnlockRow(idForRow, currInfo.zoneName, "description", "short", idForRow);
-                newItem.SetActive(true);
-                listRow.Add(newItem);
-                result.Add(temp);
+                InitInfoFish infoFishTMP = listInfoFish[j];
+                // CHECK IF THE FISH IS BEING BLOCKED
+
+                if (infoFishTMP.blockObject != null)
+                {
+                    // INIT INFO TO UNLOCK NEW FISH
+                    temp.initInfoRow(currInfo.zoneId, idForRow);
+
+                    
+
+                    newItem = Instantiate(itemPrefab, content);
+                    uRow = newItem.GetComponent<UnlockRow>();
+                    uRow.initUnlockRow(idForRow, currInfo.zoneName, "Unlock a new fish", "short", idForRow);
+                    uRow.setBlock(infoFishTMP.blockObject);
+                    newItem.SetActive(true);
+
+                    // ADD FISH INFO
+                    temp.listInfoFish.Add(infoFishTMP);
+
+
+                    listRow.Add(newItem);
+
+                    // ADD THE NEW INFO TO THE RESULT
+                    resultInit.Add(temp);
+                }
             }
         }
-        return result;
+        return resultInit;
     }
 
     public void onClick_Row(GameObject row)
@@ -100,7 +129,14 @@ public class BuyCategory : MonoBehaviour
         int result = panelManager.BuyUpgrade(clickedRow.getPrice());
         if (result == 0)
         {
+            // TODO MAKE THE BLOCK DISAPEAR AND ENABLE THE ROW IN UPGRADE CATEGORY
             row.SetActive(false);
+            if (clickedRow.blockObject != null)
+            {
+                GameObject blockObject = clickedRow.blockObject;
+                blockObject.SetActive(false);
+
+            }
         }
     }
 

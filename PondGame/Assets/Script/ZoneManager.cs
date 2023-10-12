@@ -45,7 +45,7 @@ public class ZoneManager : MonoBehaviour
         
     }
 
-    public List<InitInfo> initialiseZoneManager()
+    public List<InitInfo> initialiseZoneManager(int amountOfZone = 4)
     {
         List<InitInfo> result = new List<InitInfo>();
         for (int i = 0; i < numberOfZone; i++)
@@ -53,7 +53,7 @@ public class ZoneManager : MonoBehaviour
             // Init the zone
             GameObject zoneTMP = Instantiate(list_PrefabZone[0]);
             Zone zone = zoneTMP.GetComponent<Zone>();
-            InitInfo temporaryVar = zone.initZone(4);
+            InitInfo temporaryVar = zone.initZone(amountOfZone);
 
             // Init position
             zoneTMP.transform.position = new Vector3(0, last_y, 0);
