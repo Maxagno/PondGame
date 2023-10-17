@@ -8,6 +8,7 @@ public class UnlockRow : MonoBehaviour
 {
     public int id;
     public int fishId;
+    public int zoneId;
 
     public string name;
     public string description;
@@ -32,11 +33,13 @@ public class UnlockRow : MonoBehaviour
     public GameObject blockObject;
 
     public Button buyButton;
+    public GameObject zone;
 
 
-    public void initUnlockRow(int id, string name, string description, string short_description, int price, int category)
+    public void initUnlockRow(int id, int zoneId, string name, string description, string short_description, int price, int category)
     {
         this.id = id;
+        this.zoneId = zoneId;
         this.name = name;
         this.description = description;
         this.short_description = short_description;

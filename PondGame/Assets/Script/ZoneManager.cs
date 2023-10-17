@@ -6,7 +6,6 @@ public class ZoneManager : MonoBehaviour
 {
     public List<GameObject> list_Zone = new List<GameObject> ();
     public List<GameObject> list_PrefabZone = new List<GameObject> ();
-
     public GameObject StartZone;
     public int numberOfZone = 4;
 
@@ -40,9 +39,13 @@ public class ZoneManager : MonoBehaviour
             GameObject zoneTMP = Instantiate(list_PrefabZone[0]);
             Zone zone = zoneTMP.GetComponent<Zone>();
             InitInfo temporaryVar = zone.initZone(i, amountOfZone);
-
+            temporaryVar.zone = zoneTMP;
             // Init position
             zoneTMP.transform.position = new Vector3(0, last_y, 0);
+            if(i > 0)
+            {
+                zoneTMP.SetActive(false);
+            }
             list_Zone.Add(zoneTMP);
             last_y += -17;
             result.Add(temporaryVar);

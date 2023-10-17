@@ -10,7 +10,7 @@ public class InitInfo : MonoBehaviour
     public List<InitInfoFish> listInfoFish;
 
     // INFO FOR InitInfoRow
-
+    public GameObject zone;
     public int rowId;
     //public List<InitInfoFish> infoFish;
 
