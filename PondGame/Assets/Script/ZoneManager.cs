@@ -24,23 +24,9 @@ public class ZoneManager : MonoBehaviour
         
     }
 
-    public void initZoneManager()
-    {
-        for (int i = 0; i < numberOfZone; i++)
-        {
-            GameObject zoneTMP = Instantiate(list_PrefabZone[0]);
-            Zone zone = zoneTMP.GetComponent<Zone>();
-            zone.initZone(4);
-            zoneTMP.transform.position = new Vector3(0, last_y, 0);
-            Renderer rend = zoneTMP.GetComponent<Renderer>();
-            list_Zone.Add(zoneTMP);
-            last_y += -17;
-        }
-    }
-
     public void newFish(int fishId, int zoneId)
     {
-        Debug.Log("Here in the Zone manager IdZone:  " + zoneId);
+        Debug.Log("Here in the Zone manager IdZone:  " + zoneId + "enabling the fishId : " + fishId);
         list_Zone[zoneId].GetComponent<Zone>().buyFish(fishId);
         
     }
@@ -53,7 +39,7 @@ public class ZoneManager : MonoBehaviour
             // Init the zone
             GameObject zoneTMP = Instantiate(list_PrefabZone[0]);
             Zone zone = zoneTMP.GetComponent<Zone>();
-            InitInfo temporaryVar = zone.initZone(amountOfZone);
+            InitInfo temporaryVar = zone.initZone(i, amountOfZone);
 
             // Init position
             zoneTMP.transform.position = new Vector3(0, last_y, 0);

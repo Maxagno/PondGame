@@ -7,6 +7,7 @@ using TMPro;
 public class UnlockRow : MonoBehaviour
 {
     public int id;
+    public int fishId;
 
     public string name;
     public string description;
@@ -15,6 +16,12 @@ public class UnlockRow : MonoBehaviour
 
     public string short_description;
 
+    public int categoryRow;
+    /*
+     * 0 : Unlock new Zone
+     * 1 : Unlock new Fish
+     * 2 : Enable a Boost 
+    */
 
     public TMP_Text Name_Text;
     public TMP_Text ShortDescription_Text; 
@@ -27,15 +34,17 @@ public class UnlockRow : MonoBehaviour
     public Button buyButton;
 
 
-    public void initUnlockRow(int id, string name, string description, string short_description, int price)
+    public void initUnlockRow(int id, string name, string description, string short_description, int price, int category)
     {
         this.id = id;
         this.name = name;
         this.description = description;
         this.short_description = short_description;
         this.price = price;
+        this.categoryRow = category;
         initText();
         blockObject = null;
+        fishId = -1;
     }
     // Start is called before the first frame update
     void Start()
@@ -52,6 +61,10 @@ public class UnlockRow : MonoBehaviour
     public void setBlock(GameObject blockObject)
     {
         this.blockObject = blockObject;
+    }
+    public void setfishId(int fishId)
+    {
+        this.fishId = fishId;
     }
 
     public void initText()

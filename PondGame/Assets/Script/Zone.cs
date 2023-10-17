@@ -25,17 +25,18 @@ public class Zone : MonoBehaviour
         
     }
 
-    public InitInfo initZone(int amount)
+    public InitInfo initZone(int id, int amount)
     {
+        this.id = id;
         InitInfo resultInit = new InitInfo();
         resultInit.initInfoZone(id, name);
 
         List<InitInfoFish> listInfoFish = resultInit.listInfoFish;
 
         // Init the loop for list of fish
-        for (int i = 0; i < listInfoFish.Count;i++)
+        for (int i = 0; i < listFish.Count;i++)
         {
-            Fish fishTMP = listInfoFish[i].GetComponent<Fish>();
+            Fish fishTMP = listFish[i].GetComponent<Fish>();
             InitInfoFish infoFishTMP = new InitInfoFish();
             infoFishTMP.initInfoFish(fishTMP.id, fishTMP.name, fishTMP.description, fishTMP.shortDescription, fishTMP.image, true, listBlock[i]);
             listInfoFish.Add(infoFishTMP);

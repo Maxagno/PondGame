@@ -82,6 +82,7 @@ public class UpgradeCategory : MonoBehaviour
             listOfProd.Add(0);
         }
     }
+    
     public void initialiseUpgradeCategory(List<InitInfo> initInfos)
     {
         // Assurez-vous que le préfab d'article et le contenu sont définis.
@@ -98,9 +99,6 @@ public class UpgradeCategory : MonoBehaviour
         initRow(row_tmp, Clicker, -1, -1);
         newItem.SetActive(true);
         
-
-        Debug.Log("Level  " + Clicker.level);
-
         // ADDING THE ROW TO ALL LIST
         listOfFish.Add(Clicker);
         listRow.Add(newItem);
@@ -108,18 +106,25 @@ public class UpgradeCategory : MonoBehaviour
         listOfCost.Add(Clicker.cost);
         listOfamountLevel.Add(1);
 
-
+        int rowId = 0;
         // Adding the rest of the possible fish to buy
         for (int i = 0; i < initInfos.Count; i++)
         {
             // Instantiate the prefab
             InitInfo currRow = initInfos[i];
-            if (currRow.listInfoFish.Count != 0)
-            {
-                // GET THE INFO FOR THE ROW
-                InitInfoFish infoFishTMP = currRow.listInfoFish[0];
 
-                DataFish fish = new DataFish(i, infoFishTMP.fishName, infoFishTMP.fishDescription, i, i, 0);
+
+            List<InitInfoFish> listInfoFish = currRow.listInfoFish;
+
+            // CREATING THE ROW TO UNLOCK NEW FISH
+            for (int j = 0; j < listInfoFish.Count; j++)
+            {
+                InitInfoFish infoFishTMP = listInfoFish[j];
+                // GET THE INFO FOR THE ROW
+
+                DataFish fish = new DataFish(rowId, infoFishTMP.fishName, infoFishTMP.fishDescription, i+j, i+j);
+
+                rowId++;
 
                 newItem = Instantiate(itemPrefab, content);
                 row_tmp = newItem.GetComponent<ShopRow>();
@@ -129,8 +134,6 @@ public class UpgradeCategory : MonoBehaviour
                 listOfFish.Add(fish);
                 listOfCurrCost.Add(fish.cost);
                 listOfCost.Add(fish.cost);
-
-
                 listRow.Add(newItem);
                 listOfamountLevel.Add(1);
                 listOfProd.Add(0);
@@ -147,6 +150,8 @@ public class UpgradeCategory : MonoBehaviour
         DataFish fish = listOfFish[id + 1];
         int level = listOfamountLevel[id+1];
         int result = panelManager.BuyUpgrade(listOfCost[id+1]);
+
+        Debug.Log("The result is : " + result + "  the Id of the row is : " + id + " and the current level of the fish is : " + fish.level);
 
         // Can be bought
         if (result == 0)

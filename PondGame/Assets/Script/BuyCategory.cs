@@ -53,8 +53,6 @@ public class BuyCategory : MonoBehaviour
 
     public List<InitInfo> initialiseBuyCategory(List<InitInfo> infoForPanel)
     {
-        Debug.Log("Number of initInfo : " + infoForPanel.Count);
-
         List<InitInfo> resultInit = new List<InitInfo>();
         
         if (itemPrefab == null || content == null)
@@ -67,27 +65,25 @@ public class BuyCategory : MonoBehaviour
         for (int i = 0; i < infoForPanel.Count; i++)
         {
             InitInfo temp = new InitInfo();
-
             InitInfo currInfo = infoForPanel[i];
             
             GameObject newItem = Instantiate(itemPrefab, content);
             
             // INIT THE ROW TO UNLOCK THE ZONE
             UnlockRow uRow = newItem.GetComponent<UnlockRow>();
-            uRow.buyButton.onClick.AddListener(delegate { onClick_Row(newItem); });
-            uRow.initUnlockRow(idForRow, currInfo.zoneName, "description", "short / Unlock The Zone ", idForRow);
+            initRow(uRow, idForRow, currInfo.zoneName, "Unlock a new zone", "Short / Unlock a zone" + idForRow, idForRow, 0);
+
             temp.initInfoRow(currInfo.zoneId, idForRow);
+
             idForRow++;
+            
             newItem.SetActive(true);
             listRow.Add(newItem);
 
             // ADD THE NEW INFO TO THE RESULT
-            resultInit.Add(temp);
-
-
+            //resultInit.Add(temp);
 
             List<InitInfoFish> listInfoFish = currInfo.listInfoFish;
-
 
             // CREATING THE ROW TO UNLOCK NEW FISH
             for (int j = 0; j < listInfoFish.Count; j++)
@@ -98,16 +94,12 @@ public class BuyCategory : MonoBehaviour
                 if (infoFishTMP.blockObject != null)
                 {
                     // INIT INFO TO UNLOCK NEW FISH
-                    temp.initInfoRow(currInfo.zoneId, idForRow);
-
-                    
-
                     newItem = Instantiate(itemPrefab, content);
                     uRow = newItem.GetComponent<UnlockRow>();
-                    uRow.initUnlockRow(idForRow, currInfo.zoneName, "Unlock a new fish", "short", idForRow);
-                    uRow.setBlock(infoFishTMP.blockObject);
-                    newItem.SetActive(true);
+                    initRow(uRow, idForRow, currInfo.zoneName, "Unlock a new fish", "Short" + idForRow, idForRow, 1, infoFishTMP);
 
+                    newItem.SetActive(true);
+                    idForRow++;
                     // ADD FISH INFO
                     temp.listInfoFish.Add(infoFishTMP);
 
@@ -115,21 +107,30 @@ public class BuyCategory : MonoBehaviour
                     listRow.Add(newItem);
 
                     // ADD THE NEW INFO TO THE RESULT
-                    resultInit.Add(temp);
+                    
+                } else {
+                    temp.listInfoFish.Add(infoFishTMP);
                 }
             }
+            resultInit.Add(temp);
         }
         return resultInit;
     }
 
-    public void onClick_Row(GameObject row)
+    public void onClick_Row(Button button)
     {
+        GameObject row = button.transform.parent.gameObject;
         UnlockRow clickedRow = row.GetComponent<UnlockRow>();
         int id = clickedRow.getId();
         int result = panelManager.BuyUpgrade(clickedRow.getPrice());
+        Debug.Log("Id id : " + id + " the category of the row is : " + clickedRow.categoryRow + " The fish id is : " + clickedRow.fishId);
+
         if (result == 0)
         {
-            // TODO MAKE THE BLOCK DISAPEAR AND ENABLE THE ROW IN UPGRADE CATEGORY
+            // ENABLE THE ROW IN UPGRADE CATEGORY
+
+
+            // REMOVING THE ROW AND THE BLOCK IF THERE IS ONE
             row.SetActive(false);
             if (clickedRow.blockObject != null)
             {
@@ -139,5 +140,20 @@ public class BuyCategory : MonoBehaviour
             }
         }
     }
+
+
+    // INIT THE ROW : NECESSARY FOR THE DELEGATE FUNCTION
+    private void initRow(UnlockRow row, int id, string zoneName, string description, string shortDesc, int cost, int category, InitInfoFish infoFishTMP = null)
+    {
+        row.initUnlockRow(id, zoneName, description, shortDesc, cost, category);
+        if (category == 1)
+        {
+            row.setBlock(infoFishTMP.blockObject);
+            row.setfishId(infoFishTMP.fishId);
+        }
+        row.buyButton.onClick.AddListener(delegate { onClick_Row(row.buyButton); });
+    }
+
+
 
 }

@@ -13,14 +13,13 @@ public class DataFish : MonoBehaviour
     public int production;
     public int cost;
 
-    public DataFish(int new_id, string new_name, string new_description, int new_production, int new_cost, int new_level)
+    public DataFish(int new_id, string new_name, string new_description, int new_production, int new_cost, int new_level = 0)
     {
         id = new_id;
         name = new_name;
         description = new_description;
         
         level = new_level;
-        Debug.Log(level);
         production = new_production;
         cost = new_cost;
 
