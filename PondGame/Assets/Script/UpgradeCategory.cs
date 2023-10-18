@@ -8,6 +8,7 @@ public class UpgradeCategory : MonoBehaviour
     public GameObject itemPrefab; // Référence au préfab d'article de la boutique.
 
     public List<GameObject> listRow = new List<GameObject>();
+    public List<GameObject> listButtonAmount;
 
     public Transform content; // Référence au contenu de la ScrollView.
     public int numberOfItems = 10; // Nombre d'articles dans la boutique.
@@ -186,9 +187,24 @@ public class UpgradeCategory : MonoBehaviour
         }
     }
 
-    public void onClick_UpdateAmount(int amount)
+    public void onClick_UpdateAmount(Button button)
     {
-        amountBuy = amount;
+        button.interactable = false;
+        int i = 0;
+        int j = 1;
+        if (button.name == "One") {
+            amountBuy = 1;
+            i = 2;
+        } else if (button.name == "Two")
+        {
+            j = 2;
+            amountBuy = 10;
+        } else
+        {
+            amountBuy = -1;
+        }
+        listButtonAmount[i].GetComponent<Button>().interactable = true;
+        listButtonAmount[j].GetComponent<Button>().interactable = true;
     }
 
     // PRIVATE FUNCTION
