@@ -53,6 +53,7 @@ public class UpgradeCategory : MonoBehaviour
         DataFish Clicker = new DataFish(-1, "Click", "", 1, 1, 1);
         ShopRow row_tmp = newItem.GetComponent<ShopRow>();
         initRow(row_tmp, Clicker, -1, -1);
+        row_tmp.isLocked = false;
         newItem.SetActive(true);
         
         // ADDING THE ROW TO ALL LIST
@@ -105,6 +106,7 @@ public class UpgradeCategory : MonoBehaviour
             if (currZone.zoneId == zoneId)
             {
                 currZone.listFishId.Add(fishId);
+                updateHiddenRows();
                 return;
             }
             else if(currZone.zoneId > zoneId)
@@ -137,10 +139,23 @@ public class UpgradeCategory : MonoBehaviour
             Unlocked currZone = listUnlocked[indexUnlocked];
             if(currRow.zoneId > currZone.zoneId) 
             { 
+                i--;
                 indexUnlocked++;
             } else
             {
+                Debug.Log("IsRowLocked : " +  currRow.isLocked);
                 listRow[i].SetActive(true);
+                if (currRow.isLocked)
+                {
+                    for (int j = 0; j < currZone.listFishId.Count; j++)
+                    {
+                        if (currRow.fishId == currZone.listFishId[j])
+                        {
+                            currRow.isLocked = false;
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
@@ -225,8 +240,7 @@ public class UpgradeCategory : MonoBehaviour
             if (listOfCost[i] > money || currRow.getIsLocked())
             {
                 currRow.canNotBeBought();
-            } else
-            {
+            } else {
                 currRow.canBeBought();
             }
         }
@@ -281,6 +295,7 @@ public class UpgradeCategory : MonoBehaviour
         row.fishDescription = fish.description;
         row.buyButton.onClick.AddListener(delegate { onClick_Row(row.buyButton); });
         row.initText(fish.name, fish.level, fish.production, fish.cost);
+        row.isLocked = true;
     }
 
 
