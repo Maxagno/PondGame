@@ -37,6 +37,7 @@ public class PanelManager : MonoBehaviour
     {
         List<InitInfo> infoToUpgrade = buyCategory.initialiseBuyCategory(initInfos);
         upgradeCategory.initialiseUpgradeCategory(infoToUpgrade);
+        updateUnlocked(0, -1);
     }
 
     public int BuyUpgrade(int cost)
@@ -66,6 +67,10 @@ public class PanelManager : MonoBehaviour
         gameManager.newFish(id, zoneId);
     }
 
+    public void updateUnlocked(int zoneId, int fishId)
+    {
+        upgradeCategory.updateUnlocked(zoneId, fishId);
+    }
 
     //GET SET
 

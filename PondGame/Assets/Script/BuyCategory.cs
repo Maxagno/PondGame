@@ -135,6 +135,7 @@ public class BuyCategory : MonoBehaviour
 
         if (result == 0)
         {
+            panelManager.updateUnlocked(clickedRow.zoneId, clickedRow.fishId);
             // ENABLE THE ROW IN UPGRADE CATEGORY
             //Row is unlocking a zone
             if (clickedRow.categoryRow == 0)

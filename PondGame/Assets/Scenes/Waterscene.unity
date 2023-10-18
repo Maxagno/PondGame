@@ -3159,6 +3159,7 @@ MonoBehaviour:
   content: {fileID: 1196265362}
   numberOfItems: 4
   PanelManager: {fileID: 302073011}
+  listUnlocked: []
   amountBuy: 1
 --- !u!1 &995512257
 GameObject:

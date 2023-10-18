@@ -16,6 +16,8 @@ public class UpgradeCategory : MonoBehaviour
     public GameObject PanelManager;
     private PanelManager panelManager;
 
+    public List<Unlocked> listUnlocked = new List<Unlocked>();
+
     private List<int> listOfCost = new List<int>();
     private List<int> listOfCurrCost = new List<int>();
 
@@ -29,8 +31,6 @@ public class UpgradeCategory : MonoBehaviour
 
     private void Start()
     {
-        // Crée les articles de la boutique et les ajoute à la ScrollView.
-        //GenerateShopItems();
         panelManager = PanelManager.GetComponent<PanelManager>();
     }
 
@@ -38,52 +38,7 @@ public class UpgradeCategory : MonoBehaviour
     {
         canBeBought(amountBuy);
     }
-
-    private void GenerateShopItems()
-    {
-        // Assurez-vous que le préfab d'article et le contenu sont définis.
-        if (itemPrefab == null || content == null)
-        {
-            Debug.LogError("Préfab ou contenu non défini dans le gestionnaire de boutique.");
-            return;
-        }
-
-        // INIT Click ROW
-        GameObject newItem = Instantiate(itemPrefab, content);
-        DataFish Clicker = new DataFish(-1, "Click", "", 1, 1, 1);
-        ShopRow row_tmp = newItem.GetComponent<ShopRow>();
-        initRow(row_tmp, Clicker, -1, -1);
-        newItem.SetActive(true);
-        listOfFish.Add(Clicker);
-        Debug.Log("Level  " + Clicker.level);
-        listRow.Add(newItem);
-        listOfCurrCost.Add(Clicker.cost);
-        listOfCost.Add(Clicker.cost);
-        listOfamountLevel.Add(1);
-        // Génère les articles de la boutique.
-        for (int i = 0; i < numberOfItems; i++)
-        {
-            // Instancie l'article de préfab.
-            DataFish fish = new DataFish(i, "NameOfFish_" + i, "", i, i, 0);
-            newItem = Instantiate(itemPrefab, content);
-            row_tmp = newItem.GetComponent<ShopRow>();
-            initRow(row_tmp, fish, i, 1);
-            listOfFish.Add(fish);
-            listOfCurrCost.Add(fish.cost);
-            listOfCost.Add(fish.cost);
-            // Personnalisez l'article ici en fonction de vos besoins.
-            // Par exemple, définissez l'image, le nom, la description et le prix de l'article.
-
-            // Vous pouvez également ajouter un bouton d'achat et définir son comportement ici.
-
-            // Assurez-vous que l'article est correctement configuré.
-            newItem.SetActive(true);
-            listRow.Add(newItem);
-            listOfamountLevel.Add(1);
-            listOfProd.Add(0);
-        }
-    }
-    
+        
     public void initialiseUpgradeCategory(List<InitInfo> initInfos)
     {
         // Assurez-vous que le préfab d'article et le contenu sont définis.
@@ -130,7 +85,7 @@ public class UpgradeCategory : MonoBehaviour
                 newItem = Instantiate(itemPrefab, content);
                 row_tmp = newItem.GetComponent<ShopRow>();
                 initRow(row_tmp, fish, infoFishTMP.fishId, currRow.zoneId);
-                newItem.SetActive(true);
+                newItem.SetActive(false);
 
                 listOfFish.Add(fish);
                 listOfCurrCost.Add(fish.cost);
@@ -138,6 +93,54 @@ public class UpgradeCategory : MonoBehaviour
                 listRow.Add(newItem);
                 listOfamountLevel.Add(1);
                 listOfProd.Add(0);
+            }
+        }
+    }
+
+    public void updateUnlocked(int zoneId, int fishId)
+    {
+        for (int i = 0; i < listUnlocked.Count; i++)
+        {
+            Unlocked currZone = listUnlocked[i];
+            if (currZone.zoneId == zoneId)
+            {
+                currZone.listFishId.Add(fishId);
+                return;
+            }
+            else if(currZone.zoneId > zoneId)
+            {
+                break;
+            }
+        }
+        Unlocked newZone = new Unlocked();
+        newZone.zoneId = zoneId;
+        if (fishId != -1)
+        {
+            newZone.listFishId.Add(fishId);
+        }
+        listUnlocked.Add(newZone);
+        updateHiddenRows();
+        return;
+    }
+
+    
+    private void updateHiddenRows()
+    {
+        int indexUnlocked = 0;
+        for (int i = 0; i < listRow.Count; i++)
+        {
+            if (indexUnlocked >= listUnlocked.Count)
+            {
+                return;
+            }
+            ShopRow currRow = listRow[i].GetComponent<ShopRow>();
+            Unlocked currZone = listUnlocked[indexUnlocked];
+            if(currRow.zoneId > currZone.zoneId) 
+            { 
+                indexUnlocked++;
+            } else
+            {
+                listRow[i].SetActive(true);
             }
         }
     }
@@ -153,7 +156,7 @@ public class UpgradeCategory : MonoBehaviour
         int result = panelManager.BuyUpgrade(listOfCost[id+1]);
 
         Debug.Log("The result is : " + result + "  the Id of the row is : " + id + " and the current level of the fish is : " + fish.level);
-
+         
         // Can be bought
         if (result == 0)
         {
