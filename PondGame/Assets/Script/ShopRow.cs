@@ -37,7 +37,7 @@ public class ShopRow : MonoBehaviour
         isLocked = isLocked;
     }
 
-    public void initText(string name, int level, int production, int price)
+    public void initText(string name, int level, AmountMoney production, AmountMoney price)
     {
         Name_Text.text = name;
         Level_Text.text = level.ToString();
@@ -49,10 +49,11 @@ public class ShopRow : MonoBehaviour
         {
             Production_Text.text = production.ToString();
         }
+        Debug.Log("Updating Price text in the row : " + price.ToString());
         Price_Text.text = price.ToString();
     }
 
-    public void UpdateCost(int cost)
+    public void UpdateCost(AmountMoney cost)
     {
         Price_Text.text = cost.ToString();
     }

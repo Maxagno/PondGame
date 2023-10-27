@@ -10,10 +10,10 @@ public class DataFish : MonoBehaviour
     public string description;
 
     public int level;
-    public int production;
-    public int cost;
+    public AmountMoney production;
+    public AmountMoney cost;
 
-    public DataFish(int new_id, string new_name, string new_description, int new_production, int new_cost, int new_level = 0)
+    public DataFish(int new_id, string new_name, string new_description, AmountMoney new_production, AmountMoney new_cost, int new_level = 0)
     {
         id = new_id;
         name = new_name;

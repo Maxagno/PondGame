@@ -12,7 +12,8 @@ public class UnlockRow : MonoBehaviour
 
     public string name;
     public string description;
-    public int price;
+    public AmountMoney price;
+    //public int price;
     public bool isLocked = false;
 
     public string short_description;
@@ -36,7 +37,7 @@ public class UnlockRow : MonoBehaviour
     public GameObject zone;
 
 
-    public void initUnlockRow(int id, int zoneId, string name, string description, string short_description, int price, int category)
+    public void initUnlockRow(int id, int zoneId, string name, string description, string short_description, AmountMoney price, int category)
     {
         this.id = id;
         this.zoneId = zoneId;
@@ -66,7 +67,7 @@ public class UnlockRow : MonoBehaviour
         Price_Text.text = price.ToString();
     }
 
-    public void UpdateCost(int cost)
+    public void UpdateCost(AmountMoney cost)
     {
         Price_Text.text = cost.ToString();
     }
@@ -86,6 +87,6 @@ public class UnlockRow : MonoBehaviour
     public int getId() { return id; }
     public string getName() { return name; }
     public string getDescription() { return description; }
-    public int getPrice() { return price; }
+    public AmountMoney getPrice() { return price; }
 
 }

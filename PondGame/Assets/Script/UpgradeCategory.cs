@@ -18,14 +18,14 @@ public class UpgradeCategory : MonoBehaviour
 
     public List<Unlocked> listUnlocked = new List<Unlocked>();
 
-    private List<int> listOfCost = new List<int>();
-    private List<int> listOfCurrCost = new List<int>();
+    private List<AmountMoney> listOfCost = new List<AmountMoney>();
+    private List<AmountMoney> listOfCurrCost = new List<AmountMoney>();
 
     private List<int> listOfamountLevel = new List<int>();
 
     private List<DataFish> listOfFish = new List<DataFish>();
 
-    private List<int> listOfProd = new List<int> ();
+    private List<AmountMoney> listOfProd = new List<AmountMoney> ();
 
     public int amountBuy = 1;
 
@@ -50,7 +50,7 @@ public class UpgradeCategory : MonoBehaviour
 
         // INIT Click ROW
         GameObject newItem = Instantiate(itemPrefab, content);
-        DataFish Clicker = new DataFish(-1, "Click", "", 1, 1, 1);
+        DataFish Clicker = new DataFish(-1, "Click", "", new AmountMoney(1,""), new AmountMoney(1,""), 1);
         ShopRow row_tmp = newItem.GetComponent<ShopRow>();
         initRow(row_tmp, Clicker, -1, -1);
         row_tmp.isLocked = false;
@@ -60,7 +60,9 @@ public class UpgradeCategory : MonoBehaviour
         listOfFish.Add(Clicker);
         listRow.Add(newItem);
         listOfCurrCost.Add(Clicker.cost);
-        listOfCost.Add(Clicker.cost);
+        AmountMoney tmpCost = new AmountMoney(0, "");
+        tmpCost.updateAllAmount(Clicker.cost);
+        listOfCost.Add(tmpCost);
         listOfamountLevel.Add(1);
 
         int rowId = 0;
@@ -79,7 +81,7 @@ public class UpgradeCategory : MonoBehaviour
                 InitInfoFish infoFishTMP = listInfoFish[j];
                 // GET THE INFO FOR THE ROW
 
-                DataFish fish = new DataFish(rowId, infoFishTMP.fishName, infoFishTMP.fishDescription, i+j, i+j);
+                DataFish fish = new DataFish(rowId, infoFishTMP.fishName, infoFishTMP.fishDescription, new AmountMoney(i+j, ""), new AmountMoney(i+j, ""));
 
                 rowId++;
 
@@ -90,10 +92,12 @@ public class UpgradeCategory : MonoBehaviour
 
                 listOfFish.Add(fish);
                 listOfCurrCost.Add(fish.cost);
-                listOfCost.Add(fish.cost);
+                tmpCost = new AmountMoney(0, "");
+                tmpCost.updateAllAmount(fish.cost);
+                listOfCost.Add(tmpCost);
                 listRow.Add(newItem);
                 listOfamountLevel.Add(1);
-                listOfProd.Add(0);
+                listOfProd.Add(new AmountMoney(0,""));
             }
         }
     }
@@ -143,7 +147,6 @@ public class UpgradeCategory : MonoBehaviour
                 indexUnlocked++;
             } else
             {
-                Debug.Log("IsRowLocked : " +  currRow.isLocked);
                 listRow[i].SetActive(true);
                 if (currRow.isLocked)
                 {
@@ -171,7 +174,7 @@ public class UpgradeCategory : MonoBehaviour
         int result = panelManager.BuyUpgrade(listOfCost[id+1]);
 
         Debug.Log("The result is : " + result + "  the Id of the row is : " + id + " and the current level of the fish is : " + fish.level);
-         
+        Debug.Log("Before levelUp, the fish is lvl: " + fish.level + "| Prod: " + fish.production.ToString() + "| Price: " + fish.cost.ToString()); 
         // Can be bought
         if (result == 0)
         {
@@ -182,7 +185,8 @@ public class UpgradeCategory : MonoBehaviour
             {
                 (clickedRow, fish.cost) = panelManager.upgradeClick(level, clickedRow);
                 fish.level += level;
-                fish.production = fish.level * 2;
+                listOfCurrCost[id + 1] = fish.cost;
+                fish.production.updateAmount(fish.level, fish.production.letter);
             }
             else 
             { // Is it a new fish that need to be spawned 
@@ -190,17 +194,21 @@ public class UpgradeCategory : MonoBehaviour
                 {
                     panelManager.newFish(fishId, clickedRow.getZoneId());
                     fish.level = level;
+                    listOfProd[id] = fish.production;
                 }
                 else
                 {
                     fish.level += level;
                 }
-                fish.cost = updateCost(listOfCost[id+1]);
+                fish.cost = updateCost(fish.cost, amountBuy);
+                listOfCurrCost[id + 1] = fish.cost;
                 fish.production = updateProduction(fish.production, level);
-                listOfProd[id] = fish.production;
+
                 updateProductionStat();
             }
-            listOfCurrCost[id+1] = fish.cost;
+            Debug.Log("Cost of fish : " + fish.cost.ToString());
+            Debug.Log("Cost of fish in ListCurrCost : " + listOfCurrCost[id+1].ToString());
+
             clickedRow.initText(fish.name, fish.level, fish.production, fish.cost);
         }
     }
@@ -219,7 +227,7 @@ public class UpgradeCategory : MonoBehaviour
             amountBuy = 10;
         } else
         {
-            amountBuy = -1;
+            amountBuy = 25;
         }
         listButtonAmount[i].GetComponent<Button>().interactable = true;
         listButtonAmount[j].GetComponent<Button>().interactable = true;
@@ -230,14 +238,14 @@ public class UpgradeCategory : MonoBehaviour
     private void canBeBought(int amount = 1)
     {
         //Debug.Log(" Amount put :  " + amount);
-        int money = panelManager.getMoney();
+        AmountMoney money = panelManager.getMoney();
         updateListOfCost(amount, money);
         for (int i = 0; i < listOfCost.Count; i++)
         {
             //Debug.Log("Cost of " + i + " : " + listOfCost[i]);
             ShopRow currRow = listRow[i].GetComponent<ShopRow>();
             currRow.UpdateCost(listOfCost[i]);
-            if (listOfCost[i] > money || currRow.getIsLocked())
+            if (!compareIsInfAmount(listOfCost[i], money) || currRow.getIsLocked())
             {
                 currRow.canNotBeBought();
             } else {
@@ -246,42 +254,49 @@ public class UpgradeCategory : MonoBehaviour
         }
     }
 
-    private void updateListOfCost(int amount, int money)
+    private void updateListOfCost(int amount, AmountMoney money)
     {
         for (int i = 0; i < listOfCurrCost.Count; i++)
         {
-            listOfCost[i] = listOfCurrCost[i];
+            listOfCost[i].copyAmount(listOfCurrCost[i]);
             listOfamountLevel[i] = 1;
         }
         //listOfCost = listOfCurrCost;
-        if (amount == 10)
+        if (amount > 1)
         {
             for (int i = 0;i < listOfCost.Count;i++)
             {
-                listOfCost[i] = updateCost(listOfCost[i], amount);
-                listOfamountLevel[i] = 10;
+                ShopRow row = listRow[i].GetComponent<ShopRow>();
+                if (!row.isLocked)
+                {
+                    untillMaxAmount(money, i, amount);
+                }
             }
-        } else if(amount < 0) {
-            toMax(money);
         }
     }
 
-    private void toMax(int money)
+    private void untillMaxAmount(AmountMoney money, int index, int amountLvlMax)
     {
-        for (int i = 0; i < listOfCost.Count; i++)
+        if (compareIsInfAmount(listOfCost[index], money))
         {
-            int amountOfLevel = 1;
-            int tmp = listOfCost[i];
-            while (tmp <= money)
+            AmountMoney tempCost = listOfCost[index];
+            int temp = 1;
+            while (compareIsInfAmount(tempCost,money) && temp <= amountLvlMax) 
             {
-                tmp = updateCost(tmp, 1);
-                if (tmp <= money)
+                tempCost = updateCost(tempCost, 1);
+                if (compareIsInfAmount(tempCost,money))
                 {
-                    listOfCost[i] = tmp;
-                    amountOfLevel++;
+                    listOfCost[index] = (tempCost);
+                    temp++;
                 }
             }
-            listOfamountLevel[i] = amountOfLevel;
+            if (temp <= amountLvlMax)
+            {
+                listOfamountLevel[index] = temp;
+            } else
+            {
+                listOfamountLevel[index] = amountLvlMax;
+            }
         }
     }
 
@@ -299,31 +314,49 @@ public class UpgradeCategory : MonoBehaviour
     }
 
 
-    private int updateProduction(int production, int amount_lvlUp = 1) 
+    private AmountMoney updateProduction(AmountMoney production, int amount_lvlUp = 1) 
     {
         for (int i = 0; i < amount_lvlUp; i++)
         {
-            production = production + 1;
+            production.updateAmount(1, "");
         }
         return production;
     }
 
-    private int updateCost(int cost, int amount_lvlUp = 1)
+    private AmountMoney updateCost(AmountMoney cost, int amount_lvlUp = 1)
     {
+        AmountMoney result = new AmountMoney(0, "");
+        result.copyAmount(cost);
         for (int i = 0; i < amount_lvlUp; i++)
         {
-            cost += 1;
+            result.updateAmount(1, "");
         }
-        return cost;
+        return result;
     }
 
     private void updateProductionStat()
     {
-        int amount = 0;
-        for(int i = 0; i < listOfProd.Count; i++)
+        AmountMoney amount = new AmountMoney(0, "");
+
+        for (int i = 0; i < listOfProd.Count; i++)
         {
-            amount += listOfProd[i];
+            amount.updateAllAmount(listOfProd[i]);
         }
         panelManager.updateProduction(amount);
+    }
+
+    private bool compareIsInfAmount(AmountMoney amountOne, AmountMoney amountTwo)
+    {
+        int indexOne = amountOne.getIndexForLetter(amountOne.letter);
+        int indexTwo = amountTwo.getIndexForLetter(amountTwo.letter);
+        if (indexOne < indexTwo)
+        {
+            return true;
+        }
+        else if (indexOne > indexTwo)
+        {
+            return false;
+        }
+        return amountOne.listGold[indexOne] <= amountTwo.listGold[indexTwo];
     }
 }

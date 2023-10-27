@@ -21,9 +21,9 @@ public class GameManager : MonoBehaviour
     private float timeSinceLastResourceGeneration = 0f;
     private int timeCalled = 0;
 
-    private int money = 0;
-    private int moneyUsed = 0;
-    public int production = 0;
+    private AmountMoney money;
+    private AmountMoney moneyUsed = new AmountMoney(0, "");
+    public AmountMoney production;
 
     private ZoneManager zoneManager;
     private Clicker clicker;
@@ -67,8 +67,11 @@ public class GameManager : MonoBehaviour
             //Debug.Log("Call ressourceGeneration " + timeCalled);
             timeSinceLastResourceGeneration= 0f;
             //TODO 
-            money += production;
-            updateMoney();
+            
+            
+            //Debug.Log("Call ressourceGeneration " + timeCalled);
+            //money.updateAllAmount(production);
+            updateMoney(production);
         }
     }
 
@@ -98,17 +101,19 @@ public class GameManager : MonoBehaviour
         panelManager = PanelManager.GetComponent<PanelManager>();
         List<InitInfo> infoForPanel = zoneManager.initialiseZoneManager();
         panelManager.initialisePanelManager(infoForPanel);
+        production = new AmountMoney(0, "");
+        money = new AmountMoney(0, "");
         Awake();
         updateTextMoney();
         updateTextProduction();
     }
 
-    public int getMoney()
+    public AmountMoney getMoney()
     {
         return money;
     }
 
-    public void updateProduction(int amount)
+    public void updateProduction(AmountMoney amount)
     {
         production = amount;
         updateTextProduction();
@@ -119,25 +124,39 @@ public class GameManager : MonoBehaviour
         zoneManager.newFish(id, zoneId);
     }
 
-    public void updateMoney(int amount = 0)
+    public void updateMoney(AmountMoney amount = null)
     {
-        money += amount;
+        /*
+        Debug.Log("Updating the money");
+
+        Debug.Log("Money = " + money.ToString());
+        Debug.Log("amount added = " + amount.ToString());
+        Debug.Log("Money.listgold[i] : " + money.listGold[0]);
+        Debug.Log("amount.listgold[i] : " + amount.listGold[0]);*/
+
+        money.updateAllAmount(amount);
         updateTextMoney();
     }
-    
-    public (ShopRow, int) upgradeClick(int amount, ShopRow clickRow)
+
+    public void updateBoughtMoney(AmountMoney amount = null)
     {
-        return clicker.upgradeClick(amount, clickRow);
+        money.substractAllAmount(amount);
+        updateTextMoney();
+    }
+
+    public (ShopRow, AmountMoney) upgradeClick(int amountLvl, ShopRow clickRow)
+    {
+        return clicker.upgradeClick(amountLvl, clickRow);
     }
 
     private void updateTextMoney()
     {
-        MoneyText.text = "Gold: " + _getTextFromInt(money);
+        MoneyText.text = "Gold: " + money.ToString();
     }
     
     private void updateTextProduction()
     {
-        ProductionText.text = "Gold: " + _getTextFromInt(production) + "/s";
+        ProductionText.text = "Gold: " + production.ToString() + "/s";
     }
     //Do better
     private string _getTextFromInt(int value)

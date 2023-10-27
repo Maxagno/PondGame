@@ -68,7 +68,7 @@ public class BuyCategory : MonoBehaviour
         {
             InitInfo temp = new InitInfo();
             InitInfo currInfo = infoForPanel[i];
-
+            AmountMoney amountMoney;
             GameObject newItem;
             UnlockRow uRow;
             temp.initInfoRow(currInfo.zoneId, idForRow);
@@ -78,7 +78,8 @@ public class BuyCategory : MonoBehaviour
                 newItem = Instantiate(itemPrefab, content);
                 uRow = newItem.GetComponent<UnlockRow>();
                 uRow.zone = currInfo.zone;
-                initRow(uRow, idForRow, currInfo.zoneId, currInfo.zoneName, "Unlock a new zone", "Short / Unlock a zone" + idForRow, idForRow, 0);
+                amountMoney = calculateCost(idForRow, "");
+                initRow(uRow, idForRow, currInfo.zoneId, currInfo.zoneName, "Unlock a new zone", "Short / Unlock a zone" + idForRow, amountMoney, 0);
 
                 temp.initInfoRow(currInfo.zoneId, idForRow);
 
@@ -104,7 +105,8 @@ public class BuyCategory : MonoBehaviour
                     // INIT INFO TO UNLOCK NEW FISH
                     newItem = Instantiate(itemPrefab, content);
                     uRow = newItem.GetComponent<UnlockRow>();
-                    initRow(uRow, idForRow, currInfo.zoneId, currInfo.zoneName, "Unlock a new fish", "Short" + idForRow, idForRow, 1, infoFishTMP);
+                    amountMoney = calculateCost(idForRow, "");
+                    initRow(uRow, idForRow, currInfo.zoneId, currInfo.zoneName, "Unlock a new fish", "Short" + idForRow, amountMoney, 1, infoFishTMP);
 
                     newItem.SetActive(true);
                     idForRow++;
@@ -164,13 +166,13 @@ public class BuyCategory : MonoBehaviour
     private void canBeBought()
     {
         //Debug.Log(" Amount put :  " + amount);
-        int money = panelManager.getMoney();
+        AmountMoney money = panelManager.getMoney();
 
         for (int i = 0; i < listRow.Count; i++)
         {
             //Debug.Log("Cost of " + i + " : " + listOfCost[i]);
             UnlockRow currRow = listRow[i].GetComponent<UnlockRow>();
-            if (currRow.price <= money && listRow[i].activeSelf )
+            if (compareIsInfAmount(currRow.price, money) && listRow[i].activeSelf )
             {
                 currRow.canBeBought();
             }
@@ -182,7 +184,7 @@ public class BuyCategory : MonoBehaviour
     }
 
     // INIT THE ROW : NECESSARY FOR THE DELEGATE FUNCTION
-    private void initRow(UnlockRow row, int id, int zoneId, string zoneName, string description, string shortDesc, int cost, int category, InitInfoFish infoFishTMP = null)
+    private void initRow(UnlockRow row, int id, int zoneId, string zoneName, string description, string shortDesc, AmountMoney cost, int category, InitInfoFish infoFishTMP = null)
     {
         row.initUnlockRow(id, zoneId, zoneName, description, shortDesc, cost, category);
         if (category == 1)
@@ -225,6 +227,26 @@ public class BuyCategory : MonoBehaviour
                 }
             }
         }
+    }
+
+    private AmountMoney calculateCost(int amount, string letter)
+    {
+        AmountMoney amountCost = new AmountMoney(amount, letter);
+        return amountCost;
+    }
+
+    private bool compareIsInfAmount(AmountMoney amountOne, AmountMoney amountTwo)
+    {
+        int indexOne = amountOne.getIndexForLetter(amountOne.letter);
+        int indexTwo = amountTwo.getIndexForLetter( amountTwo.letter);
+        if (indexOne < indexTwo)
+        {
+            return true;
+        }else if (indexOne > indexTwo)
+        {
+            return false;
+        }
+        return amountOne.listGold[indexOne] <= amountTwo.listGold[indexTwo];
     }
 
 }

@@ -4425,7 +4425,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Max
+  m_text: x25
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5384,7 +5384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clickLevel: 1
-  clickRevenue: 1
+  clickRevenue: {fileID: 0}
   GameManager: {fileID: 2135647326}
   PanelManager: {fileID: 302073011}
 --- !u!1 &1863324360
@@ -5994,7 +5994,7 @@ MonoBehaviour:
   PanelManager: {fileID: 302073011}
   Clicker: {fileID: 1790684528}
   ZoneManager: {fileID: 671241611}
-  production: 0
+  production: {fileID: 0}
   MoneyText: {fileID: 723265088}
   ProductionText: {fileID: 995512259}
   cam: {fileID: 519420031}

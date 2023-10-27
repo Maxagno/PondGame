@@ -6,7 +6,7 @@ public class Clicker : MonoBehaviour
 {
     private int clickCount = 0; // Counter for the number of clicks
     public int clickLevel = 1;
-    public int clickRevenue = 1;
+    public AmountMoney clickRevenue;
 
     public GameObject GameManager;
     public GameObject PanelManager;
@@ -15,14 +15,15 @@ public class Clicker : MonoBehaviour
     void Start()
     {
         gameManager = GameManager.GetComponent<GameManager>();
+        clickRevenue = new AmountMoney(1, "");
     }
 
 
-    public (ShopRow, int) upgradeClick(int amount, ShopRow row)
+    public (ShopRow, AmountMoney) upgradeClick(int amount, ShopRow row)
     {
         clickLevel += amount;
-        clickRevenue = clickLevel + clickLevel;
-        int cost = clickRevenue * 2;
+        clickRevenue.updateAmount(clickLevel, clickRevenue.letter);
+        AmountMoney cost = clickRevenue;
         return (row, cost);
     }
 
