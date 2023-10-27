@@ -86,8 +86,22 @@ public class AmountMoney : MonoBehaviour
     public void updateAmount(int amount, string letter)
     {
         int i = getIndexForLetter(letter);
-        listGold[i] += amount;
+        _updateAmount(amount, i);
         updateLetter();
+    }
+
+    private void _updateAmount(int amount, int index)
+    {
+        if (index < listGold.Count)
+        {
+            int tmp = amount + listGold[index];
+            if (tmp > 999)
+            {
+                _updateAmount(tmp % 1000, index + 1);
+                tmp -= 1000;
+            }
+            listGold[index] = tmp;
+        }
     }
 
     public (int,string) getAmount()
