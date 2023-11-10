@@ -741,6 +741,7 @@ MonoBehaviour:
   Production_Text: {fileID: 133277438}
   Cost_Text: {fileID: 133277436}
   buyButton: {fileID: 133277437}
+  amountLvlUp: 1
   isLocked: 1
 --- !u!1 &151070220
 GameObject:
@@ -2010,7 +2011,7 @@ GameObject:
   - component: {fileID: 627775751}
   - component: {fileID: 627775750}
   m_Layer: 5
-  m_Name: Third
+  m_Name: Three
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2060,14 +2061,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UpgradeCategory, Assembly-CSharp
-        m_MethodName: onClick_UpdateAmount
-        m_Mode: 2
+      - m_Target: {fileID: 1548430104}
+        m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
+        m_MethodName: updateAmount
+        m_Mode: 3
         m_Arguments:
-          m_ObjectArgument: {fileID: 627775750}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Button, UnityEngine.UI
-          m_IntArgument: -1
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 25
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3197,13 +3198,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UpgradeCategory, Assembly-CSharp
-        m_MethodName: onClick_UpdateAmount
-        m_Mode: 2
+      - m_Target: {fileID: 1548430104}
+        m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
+        m_MethodName: updateAmount
+        m_Mode: 3
         m_Arguments:
-          m_ObjectArgument: {fileID: 854417541}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Button, UnityEngine.UI
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 10
           m_FloatArgument: 0
           m_StringArgument: 
@@ -5109,13 +5110,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UpgradeCategory, Assembly-CSharp
-        m_MethodName: onClick_UpdateAmount
-        m_Mode: 2
+      - m_Target: {fileID: 1548430104}
+        m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
+        m_MethodName: updateAmount
+        m_Mode: 3
         m_Arguments:
-          m_ObjectArgument: {fileID: 1219685010}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Button, UnityEngine.UI
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
@@ -6207,6 +6208,11 @@ MonoBehaviour:
   direction: {x: 0, y: 0, z: 0}
   PanelManager: {fileID: 905798065}
   ZoneManager: {fileID: 0}
+  amountLvlUp: 1
+  listRow_Amount:
+  - {fileID: 1219685010}
+  - {fileID: 854417541}
+  - {fileID: 627775750}
   listRow_GameObject:
   - {fileID: 133277441}
   - {fileID: 1065383650}
@@ -6640,6 +6646,12 @@ MonoBehaviour:
   id: 0
   zoneId: 0
   name: GoldenFrog
+  boostAmount: 1
+  base_boostAmount: 1
+  future_BaseBoost: 1
+  future_Boost: 1
+  incremental_CostUpgrade: 1
+  future_BoostCostUpgrade: 1
   description: Beautiful frog
   isLocked: 1
 --- !u!1 &1970620494

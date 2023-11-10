@@ -22,12 +22,17 @@ public class FishRow : MonoBehaviour
     public AmountMoney cost;
     public AmountMoney level;
 
+    public AmountMoney tmp_production;
+    public AmountMoney tmp_cost;
+
     public TMP_Text Name_Text;
     public TMP_Text Level_Text;
     public TMP_Text Production_Text;
     public TMP_Text Cost_Text;
 
     public Button buyButton;
+
+    public int amountLvlUp = 1;
 
     public bool isLocked = true;
 
@@ -38,30 +43,34 @@ public class FishRow : MonoBehaviour
         initFish();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void onClickUpgrade()
     {
         if (levelManager.updateBoughtMoney(cost) == 0)
         {
-            AmountMoney prodUpgrade = fishlevel.levelUp(1);
+            AmountMoney prodUpgrade = fishlevel.levelUp(amountLvlUp);
             levelManager.updateProduction(prodUpgrade);
             updateInfo();
         }
     }
 
+    public void setAmount(int amount)
+    {
+        amountLvlUp = amount;
+        updateInfo();
+    }
+
     private void updateInfo()
     {
-        cost = fishlevel.getCost();
+        AmountMoney tmp_level = new AmountMoney(amountLvlUp, "");
+        cost = fishlevel.getInfoToLevel(amountLvlUp);
         production = fishlevel.getTotalProduction();
         level = fishlevel.getLevel();
+
+        tmp_production = fishlevel.getfutureProduction();
+
         Cost_Text.text = cost.ToString();
-        Production_Text.text = production.ToString();
-        Level_Text.text = level.ToString();
+        Production_Text.text = production.ToString() + " -> " + tmp_production.ToString();
+        Level_Text.text = level.ToString() + " + " + tmp_level.ToString();
     }
 
     private void initFish()

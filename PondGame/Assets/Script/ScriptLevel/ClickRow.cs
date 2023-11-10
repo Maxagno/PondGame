@@ -16,6 +16,10 @@ public class ClickRow : MonoBehaviour
     public AmountMoney cost;
     public AmountMoney level;
 
+    public AmountMoney tmp_production;
+    public AmountMoney tmp_cost;
+
+
     public TMP_Text Name_Text;
     public TMP_Text Level_Text;
     public TMP_Text Production_Text;
@@ -23,17 +27,10 @@ public class ClickRow : MonoBehaviour
 
     public Button buyButton;
 
+    public int amountLvlUp = 1;
+
     public bool isLocked = true;
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public void setClicker(ClickerLevel clicker)
     {
@@ -45,18 +42,27 @@ public class ClickRow : MonoBehaviour
     public void onClickUpgrade()
     {
         levelManager.updateBoughtMoney(cost);
-        clicker.levelUp(1);
+        clicker.levelUp(amountLvlUp);
+        updateInfo();
+    }
+
+    public void setAmount(int amount)
+    {
+        amountLvlUp = amount;
         updateInfo();
     }
 
     private void updateInfo()
     {
-        cost = clicker.getTotalCost();
+        AmountMoney tmp_level = new AmountMoney(amountLvlUp, "");
+        cost = clicker.getInfoToLevel(amountLvlUp);
         production = clicker.getTotalProduction();
         level = clicker.getLevel();
-        Cost_Text.text = cost.ToString();
-        Production_Text.text = production.ToString();
-        Level_Text.text = level.ToString();
-    }
 
+        tmp_production = clicker.getfutureProduction();
+
+        Cost_Text.text = cost.ToString();
+        Production_Text.text = production.ToString() + " -> " + tmp_production.ToString();
+        Level_Text.text = level.ToString() +" + " + tmp_level.ToString();
+    }
 }

@@ -37,9 +37,14 @@ public class LevelManager : MonoBehaviour
     private AmountMoney moneyUsed;
     public AmountMoney production;
 
+    public int amountLvlUp = 1;
+
     private ZoneManager zoneManager;
     private ClickerLevel clicker;
     private PanelManager panelManager;
+
+    public List<Button> listRow_Amount = new List<Button>();
+
 
     public List<GameObject> listRow_GameObject = new List<GameObject>();
     public List<FishRow> listFishRow = new List<FishRow>();
@@ -103,6 +108,37 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+
+    public void updateAmount(int  amount)
+    {
+        if (amount == 1)
+        {
+            listRow_Amount[0].interactable = false;
+            listRow_Amount[1].interactable = true;
+            listRow_Amount[2].interactable = true;
+
+        }
+        else if (amount == 10)
+        {
+            listRow_Amount[0].interactable = true;
+            listRow_Amount[1].interactable = false;
+            listRow_Amount[2].interactable = true;
+
+        }
+        else
+        {
+            listRow_Amount[0].interactable = true;
+            listRow_Amount[1].interactable = true;
+            listRow_Amount[2].interactable = false;
+        }
+        amountLvlUp = amount;
+        clickRow.setAmount(amountLvlUp);
+        for (int i = 0; i < listFishRow.Count; i++)
+        {
+            listFishRow[i].setAmount(amount);
+        }
+        UpdateCanBeBought();
+    }
 
     public void onClick()
     {
@@ -179,7 +215,7 @@ public class LevelManager : MonoBehaviour
 
     private void UpdateCanBeBought()
     {
-        if (! clicker.total_cost.compareIsInfAmount(money))
+        if (!clickRow.cost.compareIsInfAmount(money))
         {
             clickRow.buyButton.interactable = false;
         }
@@ -187,10 +223,9 @@ public class LevelManager : MonoBehaviour
         {
             clickRow.buyButton.interactable = true;
         }
-        for (int i = 0; i < listFish.Count; i++)
+        for (int i = 0; i < listFishRow.Count; i++)
         {
-            FishLevel tmpFish = listFish[i];
-            AmountMoney tmp_Cost = tmpFish.getCost();
+            AmountMoney tmp_Cost = listFishRow[i].cost;
             if (! tmp_Cost.compareIsInfAmount(money))
             {
                 listFishRow[i].buyButton.interactable = false;
