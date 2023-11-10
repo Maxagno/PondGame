@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8031226729248895941}
   - component: {fileID: 3739286746802442472}
-  - component: {fileID: 6517818248105000761}
+  - component: {fileID: 6790344665344128235}
   m_Layer: 0
-  m_Name: Fish
+  m_Name: FishLevel
   m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6517818248105000761
+--- !u!114 &6790344665344128235
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,16 +94,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 558715276699082760}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d6a6826933a3a6489b8a5cb6a8f14b2, type: 3}
+  m_Script: {fileID: 11500000, guid: b44f3b518adb58447b43fa3551c0145d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 1
-  name: TestFish
-  description: This is a test fish
-  shortDescription: 
-  image: {fileID: 21300000, guid: 5cdcde52c5acb32478119b075a031955, type: 3}
-  sprite: {fileID: 3739286746802442472}
-  moveSpeed: 1
-  maxDistance_X: 3.8
-  minDistance_X: -3.8
-  maxDistance_Y: 0
+  id: 0
+  name: 
+  level: 0
+  production: 0
+  cost: 0
+  description: 

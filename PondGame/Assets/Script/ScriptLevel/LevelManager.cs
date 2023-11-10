@@ -25,7 +25,6 @@ public class LevelManager : MonoBehaviour
     public static LevelManager instance;
 
     public GameObject PanelManager;
-    public GameObject Clicker;
     public GameObject ZoneManager;
 
     private bool hasInitialized = false;
@@ -35,12 +34,17 @@ public class LevelManager : MonoBehaviour
     private int timeCalled = 0;
 
     private AmountMoney money;
-    private AmountMoney moneyUsed = new AmountMoney(0, "");
+    private AmountMoney moneyUsed;
     public AmountMoney production;
 
     private ZoneManager zoneManager;
-    private Clicker clicker;
+    private ClickerLevel clicker;
     private PanelManager panelManager;
+
+    public List<GameObject> listRow_GameObject = new List<GameObject>();
+    public List<FishRow> listFishRow = new List<FishRow>();
+    public ClickRow clickRow;
+    public List<FishLevel> listFish = new List<FishLevel>();
 
 
     // UI TEXT Variable
@@ -49,13 +53,111 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
+        money = new AmountMoney(0, "");
+        moneyUsed = new AmountMoney(0, "");
+        production = new AmountMoney(0, "");
+        clicker = new ClickerLevel();
+        clickRow.setClicker(clicker);
         Awake();
         updateTextMoney();
         updateTextProduction();
     }
 
+    void Update()
+    {
+        if (!PanelManager.activeSelf)
+        {
+            PanCamera();
+        }
 
-    // Start is called before the first frame update
+        if (_underInertia && _time <= SmoothTime)
+        {
+            cam.transform.position += _velocity;
+            float newY = Mathf.Clamp(cam.transform.position.y, bottomLimit, topLimit);
+            cam.transform.position = new Vector3(cam.transform.position.x, newY, cam.transform.position.z);
+
+            _velocity = Vector3.Lerp(_velocity, Vector3.zero, _time);
+            _time += Time.smoothDeltaTime;
+        }
+        else
+        {
+            _underInertia = false;
+            _time = 0.0f;
+        }
+        // Calculate the current resource generation rate per second based on the current upgrade level
+        //float resourceGenerationRate = GetResourceGenerationRate(upgradeLevel);
+
+        // Add the generated resources to the resources field every second
+        timeSinceLastResourceGeneration += Time.deltaTime;
+        if (timeSinceLastResourceGeneration >= 1f)
+        {
+            timeCalled++;
+            //Debug.Log("Call ressourceGeneration " + timeCalled);
+            timeSinceLastResourceGeneration = 0f;
+            //TODO 
+
+
+            Debug.Log("Call ressourceGeneration " + timeCalled);
+            //money.updateAllAmount(production);
+            updateMoney(production);
+        }
+    }
+
+
+    public void onClick()
+    {
+        if (!PanelManager.activeSelf)
+        {
+            money.updateAllAmount(clicker.getTotalProduction());
+            updateTextMoney();
+        }
+    }
+
+    public AmountMoney getMoney()
+    {
+        return money;
+    }
+
+    public void updateProduction(AmountMoney amount)
+    {
+        production.updateAllAmount(amount);
+        updateTextProduction();
+    }
+
+
+    public void updateMoney(AmountMoney amount = null)
+    {
+        
+        //Debug.Log("Updating the money");
+
+        //Debug.Log("Money = " + money.ToString());
+        //Debug.Log("amount added = " + amount.ToString());
+        //Debug.Log("Money.listgold[i] : " + money.listGold[0]);
+
+        money.updateAllAmount(amount);
+        updateTextMoney();
+    }
+
+    /*
+     * updateBoughtMoney : Update the current amount of money with the cost of upgrade bought
+     * It checks if amount exist and if it's inf or equal to the current amount of money
+     * If it run as expected then it return 0
+     * If not the it return 1
+     */
+    public int updateBoughtMoney(AmountMoney amount = null)
+    {
+        if (amount != null)
+        {
+            if ( amount.compareIsInfAmount(money) )
+            {
+                money.substractAllAmount(amount);
+                updateTextMoney();
+                return 0;
+            }
+        }
+        return 1;
+    }
+
     private void Awake()
     {
         if (!hasInitialized) // Only for the editor mode
@@ -75,10 +177,33 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    
+    private void UpdateCanBeBought()
+    {
+        if (! clicker.total_cost.compareIsInfAmount(money))
+        {
+            clickRow.buyButton.interactable = false;
+        }
+        else
+        {
+            clickRow.buyButton.interactable = true;
+        }
+        for (int i = 0; i < listFish.Count; i++)
+        {
+            FishLevel tmpFish = listFish[i];
+            AmountMoney tmp_Cost = tmpFish.getCost();
+            if (! tmp_Cost.compareIsInfAmount(money))
+            {
+                listFishRow[i].buyButton.interactable = false;
+            } else
+            {
+                listFishRow[i].buyButton.interactable = true;
+            }
+        }
+    }
 
     private void updateTextMoney()
     {
+        UpdateCanBeBought();
         MoneyText.text = "Gold: " + money.ToString();
     }
 

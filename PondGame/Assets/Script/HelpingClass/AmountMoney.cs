@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AmountMoney : MonoBehaviour
+public class AmountMoney
 {
     public List<int> listGold = new List<int>();
     public string letter = "";
+    public int index = 0;
 
     public AmountMoney(int amount, string letter)
     {
@@ -13,22 +14,21 @@ public class AmountMoney : MonoBehaviour
         {
             listGold.Add(0);
         }
-        int index = getIndexForLetter(letter);
+        index = getIndexForLetter(letter);
         listGold[index] = amount;
     }
 
     public void updateLetter()
     {
-        int lim = 0;
         for (int i = 0; i < listGold.Count; i++)
         {
             if (listGold[i] == 0)
             {
-                lim = i - 1;
+                index = i - 1;
                 break;
             }
         }
-        switch (lim)
+        switch (index)
         {
             case 1:
                 letter = "K";
@@ -86,19 +86,20 @@ public class AmountMoney : MonoBehaviour
     public void updateAmount(int amount, string letter)
     {
         int i = getIndexForLetter(letter);
-        _updateAmount(amount, i);
+        updateAmountByIndex(amount, i);
         updateLetter();
     }
 
-    private void _updateAmount(int amount, int index)
+    public void updateAmountByIndex(int amount, int index)
     {
         if (index < listGold.Count)
         {
             int tmp = amount + listGold[index];
             if (tmp > 999)
             {
-                _updateAmount(tmp % 1000, index + 1);
-                tmp -= 1000;
+                updateAmountByIndex(tmp / 1000, index + 1);
+                tmp = tmp % 1000;
+                updateLetter();
             }
             listGold[index] = tmp;
         }
@@ -174,7 +175,7 @@ public class AmountMoney : MonoBehaviour
             r = 0;
             if (tmp < 0)
             {
-                tmp = 1000 - tmp;
+                tmp = 1000 + tmp;
                 r = 1;
             }
             listGold[i] = tmp;
@@ -188,6 +189,30 @@ public class AmountMoney : MonoBehaviour
         {
             listGold[i] = amount.listGold[i];
         }
+    }
+
+    public bool compareIsInfAmount(AmountMoney amountTMP)
+    {
+        int indexTMP = amountTMP.index;
+        if (index < indexTMP)
+        {
+            return true;
+        }
+        else if (index == indexTMP)
+        {
+            if (listGold[index] == amountTMP.listGold[indexTMP])
+            {
+                for (int i = index; i >= 0; i--)
+                {
+                    if (listGold[i] != amountTMP.listGold[i])
+                    {
+                        return listGold[i] < amountTMP.listGold[i];
+                    }
+                }
+            }
+            return listGold[index] <= amountTMP.listGold[indexTMP];
+        }
+        return false;
     }
 
 }
