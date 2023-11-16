@@ -16,6 +16,7 @@ public class BuyCategory : MonoBehaviour
 
     public GameObject PanelManager;
     private PanelManager panelManager;
+    /*
     // Start is called before the first frame update
     void Start()
     {
@@ -160,7 +161,7 @@ public class BuyCategory : MonoBehaviour
 
     /*
      * Private Function
-    */
+    //
 
 
     private void canBeBought()
@@ -248,5 +249,5 @@ public class BuyCategory : MonoBehaviour
         }
         return amountOne.listGold[indexOne] <= amountTwo.listGold[indexTwo];
     }
-
+    */
 }

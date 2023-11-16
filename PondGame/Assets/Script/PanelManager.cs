@@ -11,74 +11,6 @@ public class PanelManager : MonoBehaviour
     public GameObject BuyCategory;
     public GameObject MenuPanel;
 
-    public GameObject Clicker;
-    public GameObject GameManager;
-
-    private UpgradeCategory upgradeCategory;
-    private BuyCategory buyCategory;
-    private GameManager gameManager;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        upgradeCategory = UpgradePanel.GetComponent<UpgradeCategory>();
-        buyCategory = BuyCategory.GetComponent<BuyCategory>();
-        gameManager = GameManager.GetComponent<GameManager>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void initialisePanelManager(List<InitInfo> initInfos)
-    {
-        List<InitInfo> infoToUpgrade = buyCategory.initialiseBuyCategory(initInfos);
-        upgradeCategory.initialiseUpgradeCategory(infoToUpgrade);
-        updateUnlocked(0, -1);
-    }
-
-    public int BuyUpgrade(AmountMoney cost)
-    {
-        AmountMoney money = gameManager.getMoney();
-        if (compareIsInfAmount(cost, money))
-        {
-            gameManager.updateBoughtMoney((cost));
-            return 0;
-        }
-        return 1;
-    }
-
-    public (ShopRow, AmountMoney) upgradeClick(int amount, ShopRow clickRow)
-    {
-        return gameManager.upgradeClick(amount, clickRow);
-    }
-
-    public void updateProduction(AmountMoney prod)
-    {
-        gameManager.updateProduction(prod);
-    }
-
-    public void newFish(int id, int zoneId)
-    {
-        gameManager.newFish(id, zoneId);
-    }
-
-    public void updateUnlocked(int zoneId, int fishId)
-    {
-        upgradeCategory.updateUnlocked(zoneId, fishId);
-    }
-
-    //GET SET
-
-
-    public AmountMoney getMoney()
-    {
-        return gameManager.getMoney();
-    }
-
     // GESTION OF THE PANEL
 
 
@@ -142,21 +74,4 @@ public class PanelManager : MonoBehaviour
             }
         }
     }
-
-    // Private Method
-    private bool compareIsInfAmount(AmountMoney amountOne, AmountMoney amountTwo)
-    {
-        int indexOne = amountOne.getIndexForLetter(amountOne.letter);
-        int indexTwo = amountTwo.getIndexForLetter(amountTwo.letter);
-        if (indexOne < indexTwo)
-        {
-            return true;
-        }
-        else if (indexOne > indexTwo)
-        {
-            return false;
-        }
-        return amountOne.listGold[indexOne] <= amountTwo.listGold[indexTwo];
-    }
-
 }

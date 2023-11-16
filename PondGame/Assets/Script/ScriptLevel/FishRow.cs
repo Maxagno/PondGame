@@ -47,8 +47,8 @@ public class FishRow : MonoBehaviour
     {
         if (levelManager.updateBoughtMoney(cost) == 0)
         {
-            AmountMoney prodUpgrade = fishlevel.levelUp(amountLvlUp);
-            levelManager.updateProduction(prodUpgrade);
+            double amount = fishlevel.levelUp(amountLvlUp);
+            levelManager.updateProduction(amount);
             updateInfo();
         }
     }
@@ -61,7 +61,7 @@ public class FishRow : MonoBehaviour
 
     private void updateInfo()
     {
-        AmountMoney tmp_level = new AmountMoney(amountLvlUp, "");
+        AmountMoney tmp_level = new AmountMoney(amountLvlUp);
         cost = fishlevel.getInfoToLevel(amountLvlUp);
         production = fishlevel.getTotalProduction();
         level = fishlevel.getLevel();

@@ -58,9 +58,9 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        money = new AmountMoney(0, "");
-        moneyUsed = new AmountMoney(0, "");
-        production = new AmountMoney(0, "");
+        money = new AmountMoney(0.00D);
+        moneyUsed = new AmountMoney(0.00D);
+        production = new AmountMoney(0.00D);
         clicker = new ClickerLevel();
         clickRow.setClicker(clicker);
         Awake();
@@ -102,7 +102,7 @@ public class LevelManager : MonoBehaviour
             //TODO 
 
 
-            Debug.Log("Call ressourceGeneration " + timeCalled);
+            //Debug.Log("Call ressourceGeneration " + timeCalled);
             //money.updateAllAmount(production);
             updateMoney(production);
         }
@@ -144,7 +144,7 @@ public class LevelManager : MonoBehaviour
     {
         if (!PanelManager.activeSelf)
         {
-            money.updateAllAmount(clicker.getTotalProduction());
+            money.updateAmount(clicker.getTotalProduction().getAmount());
             updateTextMoney();
         }
     }
@@ -154,9 +154,9 @@ public class LevelManager : MonoBehaviour
         return money;
     }
 
-    public void updateProduction(AmountMoney amount)
+    public void updateProduction(double amount)
     {
-        production.updateAllAmount(amount);
+        production.updateAmount(amount);
         updateTextProduction();
     }
 
@@ -170,7 +170,7 @@ public class LevelManager : MonoBehaviour
         //Debug.Log("amount added = " + amount.ToString());
         //Debug.Log("Money.listgold[i] : " + money.listGold[0]);
 
-        money.updateAllAmount(amount);
+        money.updateAmount(amount.getAmount());
         updateTextMoney();
     }
 
@@ -184,9 +184,9 @@ public class LevelManager : MonoBehaviour
     {
         if (amount != null)
         {
-            if ( amount.compareIsInfAmount(money) )
+            if ( amount.amount.CompareTo(money.amount) < 1 )
             {
-                money.substractAllAmount(amount);
+                money.amount = money.amount - amount.getAmount();
                 updateTextMoney();
                 return 0;
             }
@@ -215,7 +215,7 @@ public class LevelManager : MonoBehaviour
 
     private void UpdateCanBeBought()
     {
-        if (!clickRow.cost.compareIsInfAmount(money))
+        if (clickRow.cost.amount.CompareTo(money.getAmount()) > 0)
         {
             clickRow.buyButton.interactable = false;
         }
@@ -226,7 +226,7 @@ public class LevelManager : MonoBehaviour
         for (int i = 0; i < listFishRow.Count; i++)
         {
             AmountMoney tmp_Cost = listFishRow[i].cost;
-            if (! tmp_Cost.compareIsInfAmount(money))
+            if (tmp_Cost.amount.CompareTo(money.getAmount()) > 0)
             {
                 listFishRow[i].buyButton.interactable = false;
             } else

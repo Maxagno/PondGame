@@ -11,20 +11,20 @@ public class Clicker : MonoBehaviour
     public GameObject GameManager;
     public GameObject PanelManager;
     private GameManager gameManager;
-
+    /*
     void Start()
     {
         gameManager = GameManager.GetComponent<GameManager>();
-        clickRevenue = new AmountMoney(1, "");
+        clickRevenue = new AmountMoney();
     }
 
 
-    public (ShopRow, AmountMoney) upgradeClick(int amount, ShopRow row)
+    public (ShopRow, double) upgradeClick(int amount, ShopRow row)
     {
         clickLevel += amount;
-        clickRevenue.updateAmount(clickLevel, clickRevenue.letter);
+        clickRevenue.updateAmount(clickLevel.getAmount());
         AmountMoney cost = clickRevenue;
-        return (row, cost);
+        return (row, cost.getAmount());
     }
 
     public int getClickCount() { return clickCount; }
@@ -34,11 +34,11 @@ public class Clicker : MonoBehaviour
         if (!PanelManager.activeSelf)
         {
             clickCount++;
-            gameManager.updateMoney(clickRevenue);
+            gameManager.updateMoney(clickRevenue.getAmount());
         }
         else
         {
             PanelManager.SetActive(false);
         }
-    }
+    }*/
 }

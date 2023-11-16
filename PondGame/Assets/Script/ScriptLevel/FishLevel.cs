@@ -8,30 +8,30 @@ public class FishLevel : MonoBehaviour
     public int id;
     public int zoneId;
     public string name;
-    public AmountMoney level = new AmountMoney(0, "");
+    public AmountMoney level = new AmountMoney(1D);
 
-    public AmountMoney base_Production = new AmountMoney(0, "");
-    public AmountMoney total_Production = new AmountMoney(0, "");
+    public AmountMoney base_Production = new AmountMoney(1D);
+    public AmountMoney total_Production = new AmountMoney(1D);
 
-    public AmountMoney future_BaseProduction = new AmountMoney(0, "");
-    public AmountMoney future_Production = new AmountMoney(0, "");
+    public AmountMoney future_BaseProduction = new AmountMoney(1D);
+    public AmountMoney future_Production = new AmountMoney(1D);
 
-    public AmountMoney base_cost = new AmountMoney(0, "");
-    public AmountMoney total_cost = new AmountMoney(0, "");
+    public AmountMoney base_cost = new AmountMoney(1D);
+    public AmountMoney total_cost = new AmountMoney(1D);
 
-    public AmountMoney future_BaseCost = new AmountMoney(0, "");
-    public AmountMoney future_Cost = new AmountMoney(0, "");
+    public AmountMoney future_BaseCost = new AmountMoney(1D);
+    public AmountMoney future_Cost = new AmountMoney(1D);
 
-    public AmountMoney total_UpgradeCost = new AmountMoney(0, "");
+    public AmountMoney total_UpgradeCost = new AmountMoney(1D);
 
-    public float boostAmount = 1f;
-    public float base_boostAmount = 1f;
+    public double boostAmount = 1D;
+    public double base_boostAmount = 1D;
 
-    public float future_BaseBoost = 1f;
-    public float future_Boost = 1f;
+    public double future_BaseBoost = 1D;
+    public double future_Boost = 1D;
 
-    public float incremental_CostUpgrade = 1f;
-    public float future_BoostCostUpgrade = 1f;
+    public double incremental_CostUpgrade = 1D;
+    public double future_BoostCostUpgrade = 1D;
 
     public string description;
 
@@ -48,180 +48,158 @@ public class FishLevel : MonoBehaviour
     }
 
     
-    public AmountMoney levelUp(int amount)
+    public double levelUp(double amount)
     {
-        AmountMoney tmpProd = new AmountMoney(0, "");
-        tmpProd.copyAmount(total_Production);
+        AmountMoney tmpProd = new AmountMoney(total_Production.getAmount());
 
-        level.updateAmount(amount, "");
-
-        base_Production.copyAmount(future_BaseProduction);
-        base_cost.copyAmount(future_BaseCost);
-        total_Production.copyAmount(future_Production);
-        total_cost.copyAmount(future_Cost);
+        level.updateAmount(amount);
+        base_Production.amount = future_BaseProduction.getAmount();
+        base_cost.amount = future_BaseCost.getAmount();
+        total_Production.amount = future_Production.getAmount();
+        total_cost.amount = future_Cost.getAmount();
 
         boostAmount = future_Boost;
         base_boostAmount = future_BaseBoost;
 
-        incremental_CostUpgrade += 0.01242f * amount;
-
-        AmountMoney upgradeProd = new AmountMoney(0,"");
-        upgradeProd.copyAmount(total_Production);
-        upgradeProd.substractAllAmount(tmpProd);
+        incremental_CostUpgrade += 0.01242D * amount;
         
-        
-        return upgradeProd;
+        return total_Production.getAmount() - tmpProd.getAmount();
     }
 
     public AmountMoney getInfoToLevel(int amount)
     {
 
-        future_BaseCost.copyAmount(base_cost);
-        future_Cost.copyAmount(total_cost);
+        future_BaseCost.amount = base_cost.getAmount();
+        future_Cost.amount = total_cost.getAmount();
         future_BoostCostUpgrade = incremental_CostUpgrade;
 
-        future_BaseProduction.copyAmount(base_Production);
-        future_Production.copyAmount(total_Production);
+        future_BaseProduction.amount = base_Production.getAmount();
         future_Boost = boostAmount;
         future_BaseBoost = base_boostAmount;
 
-        total_UpgradeCost.copyAmount(total_cost);
+        total_UpgradeCost.amount = total_cost.getAmount();
 
         for (int i = 0; i < amount; i++)
         {
-            future_BaseCost.updateAmount(1, "");
-            future_BoostCostUpgrade = future_BoostCostUpgrade + 0.01242f;
+            future_BaseCost.updateAmount(1D);
+            future_BoostCostUpgrade = future_BoostCostUpgrade + 0.01242D;
             updateAmountWithBoost(future_Cost, future_BaseCost, future_BoostCostUpgrade);
 
-            total_UpgradeCost.updateAllAmount(future_Cost);
+            total_UpgradeCost.updateAmount(future_Cost.getAmount());
 
 
-            future_BaseProduction.updateAmount(1, "");
+            future_BaseProduction.updateAmount(1D);
             updateFutureBoost(1);
             updateAmountWithBoost(future_Production, future_BaseProduction, future_Boost);
         }
         return total_UpgradeCost;
     }
 
+
     // Modify it to make it being called less
-    private void updateFutureBoost(int amount)
+    private void updateFutureBoost(double amount)
     {
-        float tmpAmount = future_Boost - future_BaseBoost;
-        int l0 = level.listGold[0] + amount;
-        future_BaseBoost = 1f;
+        double tmpAmount = future_Boost - future_BaseBoost;
+        double l0 = level.amount + amount;
+        future_BaseBoost = 1D;
         if (l0 < 10)
         {
             future_Boost = tmpAmount + future_BaseBoost;
             return;
         }
 
-        future_BaseBoost += 0.1f;
+        future_BaseBoost += 0.1D;
         if (l0 < 25)
         {
             future_Boost = tmpAmount + future_BaseBoost;
             return;
         }
-        future_BaseBoost += 0.1f;
+        future_BaseBoost += 0.1D;
         if (l0 < 50)
         {
             future_Boost = tmpAmount + future_BaseBoost;
             return;
         }
-        future_BaseBoost *= 2f;
+        future_BaseBoost *= 2D;
         if (l0 < 75)
         {
             future_Boost = tmpAmount + future_BaseBoost;
             return;
         }
-        future_BaseBoost += 0.2f;
+        future_BaseBoost += 0.2D;
         if (l0 < 100)
         {
             future_Boost = tmpAmount + future_BaseBoost;
             return;
         }
-        future_BaseBoost *= 2f;
+        future_BaseBoost *= 2D;
         if (l0 < 150)
         {
             future_Boost = tmpAmount + future_BaseBoost;
             return;
         }
-        future_BaseBoost += 0.5f;
+        future_BaseBoost += 0.5D;
         future_Boost = tmpAmount + future_BaseBoost;
     }
 
 
-    private void updateAmountWithBoost(AmountMoney result, AmountMoney baseAmount, float boost)
+    private void updateAmountWithBoost(AmountMoney result, AmountMoney baseAmount, double boost)
     {
-        if (boost == 1f)
+        if (boost == 1D)
         {
-            result.copyAmount(baseAmount);
+            result.amount = baseAmount.getAmount();
             return;
         }
-        float tmp_result;
-        //int up;
-        int down;
-        for (int i = 0; i <= baseAmount.index; i++)
-        {
-            tmp_result = (float)baseAmount.listGold[i] * boost;
-            //up = (int) result / 1000;
-            if (tmp_result >= 1000f)
-            {
-                result.updateAmountByIndex((int)tmp_result / 1000, i + 1);
-            }
-            down = (int)(tmp_result * 100) % 100;
-            if (down > 0 && i > 1)
-            {
-                result.updateAmountByIndex(down, i - 1);
-            }
-            result.listGold[i] = (int)tmp_result % 1000;
-        }
+        result.amount = (double)Mathf.Round((float)(baseAmount.getAmount() * boost));
     }
 
 
-
+    // Modify it to make it being called less
     private void updateBoostPerLevel()
     {
-        float tmpAmount = boostAmount - base_boostAmount;
-        int l0 = level.listGold[0];
-        base_boostAmount = 1f;
-        if (l0 > 9)
+        double tmpAmount = boostAmount - base_boostAmount;
+        double l0 = level.amount;
+        base_boostAmount = 1D;
+        if (l0 < 10)
         {
-            base_boostAmount += 0.1f;
+            boostAmount = tmpAmount + base_boostAmount;
+            return;
         }
-        if (l0 > 24) { base_boostAmount += 0.1f; }
-        if (l0 > 49) { base_boostAmount *= 2f; }
-        if (l0 > 74) { base_boostAmount += 0.2f; }
-        if (l0 > 99) { base_boostAmount *= 2f; }
-        if (l0 > 149) { base_boostAmount += 0.5f; }
+
+        base_boostAmount += 0.1D;
+        if (l0 < 25)
+        {
+            boostAmount = tmpAmount + base_boostAmount;
+            return;
+        }
+        base_boostAmount += 0.1D;
+        if (l0 < 50)
+        {
+            boostAmount = tmpAmount + base_boostAmount;
+            return;
+        }
+        base_boostAmount *= 2D;
+        if (l0 < 75)
+        {
+            boostAmount = tmpAmount + base_boostAmount;
+            return;
+        }
+        base_boostAmount += 0.2D;
+        if (l0 < 100)
+        {
+            boostAmount = tmpAmount + base_boostAmount;
+            return;
+        }
+        base_boostAmount *= 2D;
+        if (l0 < 150)
+        {
+            boostAmount = tmpAmount + base_boostAmount;
+            return;
+        }
+        base_boostAmount += 0.5D;
         boostAmount = tmpAmount + base_boostAmount;
     }
 
-    private void updateTotalProduction()
-    {
-        if (boostAmount == 1f)
-        {
-            total_Production.copyAmount(base_Production);
-            return;
-        }
-        float result;
-        //int up;
-        int down;
-        for (int i = 0; i <= base_Production.index; i++)
-        {
-            result = (float)base_Production.listGold[i] * boostAmount;
-            //up = (int) result / 1000;
-            if (result >= 1000f)
-            {
-                total_Production.updateAmountByIndex((int)result / 1000, i + 1);
-            }
-            down = (int)(result * 100) % 100;
-            if (down > 0 && i > 1)
-            {
-                total_Production.updateAmountByIndex(down, i - 1);
-            }
-            total_Production.listGold[i] = (int)result % 1000;
-        }
-    }
 
     //GETTER SETTER 
 

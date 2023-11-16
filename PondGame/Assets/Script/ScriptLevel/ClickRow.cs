@@ -54,7 +54,7 @@ public class ClickRow : MonoBehaviour
 
     private void updateInfo()
     {
-        AmountMoney tmp_level = new AmountMoney(amountLvlUp, "");
+        AmountMoney tmp_level = new AmountMoney(amountLvlUp);
         cost = clicker.getInfoToLevel(amountLvlUp);
         production = clicker.getTotalProduction();
         level = clicker.getLevel();

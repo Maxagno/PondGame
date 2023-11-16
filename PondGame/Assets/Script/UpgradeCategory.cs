@@ -28,7 +28,7 @@ public class UpgradeCategory : MonoBehaviour
     private List<AmountMoney> listOfProd = new List<AmountMoney> ();
 
     public int amountBuy = 1;
-
+    /*
     private void Start()
     {
         panelManager = PanelManager.GetComponent<PanelManager>();
@@ -358,5 +358,5 @@ public class UpgradeCategory : MonoBehaviour
             return false;
         }
         return amountOne.listGold[indexOne] <= amountTwo.listGold[indexTwo];
-    }
+    }*/
 }
