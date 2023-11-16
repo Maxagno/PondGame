@@ -47,7 +47,9 @@ public class LevelManager : MonoBehaviour
 
 
     public List<GameObject> listRow_GameObject = new List<GameObject>();
+    public List<GameObject> listBoostRow_GameObject = new List<GameObject>();
     public List<FishRow> listFishRow = new List<FishRow>();
+    public List<BoostLevel> listBoostRow = new List<BoostLevel>();
     public ClickRow clickRow;
     public List<FishLevel> listFish = new List<FishLevel>();
 
@@ -194,6 +196,29 @@ public class LevelManager : MonoBehaviour
         return 1;
     }
 
+    public void boostUpgrade(int zoneId, int fishId, double value)
+    {
+        for (global::System.Int32 i = 0; i < listFish.Count; i++)
+        {
+            FishLevel tmpFish = listFish[i];
+            if (tmpFish.zoneId == zoneId || zoneId == -1)
+            {
+                if (fishId == tmpFish.id || fishId == -1)
+                {
+                    updateProduction(tmpFish.addBoost(value));
+                    listFishRow[i].updateInfo();
+                }
+            }
+        }
+    }
+
+    public void hideRow(int id)
+    {
+        listBoostRow_GameObject[id].SetActive(false);
+    }
+    // PRIVATE FUNCTION 
+
+
     private void Awake()
     {
         if (!hasInitialized) // Only for the editor mode
@@ -232,6 +257,18 @@ public class LevelManager : MonoBehaviour
             } else
             {
                 listFishRow[i].buyButton.interactable = true;
+            }
+        }
+        for(int i = 0; i < listBoostRow.Count; i++)
+        {
+            AmountMoney tmp_Cost = listBoostRow[i].cost;
+            if (tmp_Cost.amount.CompareTo(money.getAmount()) > 0)
+            {
+                listBoostRow[i].buyButton.interactable = false;
+            }
+            else
+            {
+                listBoostRow[i].buyButton.interactable = true;
             }
         }
     }

@@ -10,8 +10,8 @@ public class FishLevel : MonoBehaviour
     public string name;
     public AmountMoney level = new AmountMoney(1D);
 
-    public AmountMoney base_Production = new AmountMoney(1D);
-    public AmountMoney total_Production = new AmountMoney(1D);
+    public AmountMoney base_Production = new AmountMoney(0D);
+    public AmountMoney total_Production = new AmountMoney(0D);
 
     public AmountMoney future_BaseProduction = new AmountMoney(1D);
     public AmountMoney future_Production = new AmountMoney(1D);
@@ -95,6 +95,19 @@ public class FishLevel : MonoBehaviour
         return total_UpgradeCost;
     }
 
+    public double addBoost(double boostAmount)
+    {
+        this.boostAmount += boostAmount;
+        return updateProduction();
+    }
+
+    private double updateProduction()
+    {
+        AmountMoney tmpProd = new AmountMoney(total_Production.getAmount());
+        updateAmountWithBoost(total_Production, base_Production, boostAmount);
+
+        return total_Production.getAmount() - tmpProd.getAmount();
+    }
 
     // Modify it to make it being called less
     private void updateFutureBoost(double amount)
@@ -218,5 +231,7 @@ public class FishLevel : MonoBehaviour
     public void setLevel(AmountMoney level) { this.level = level; }
     public void setBaseProduction(AmountMoney base_Production) { this.base_Production = base_Production; }
     public void setCost(AmountMoney cost) { this.base_cost = cost; }
+
+    
 
 }

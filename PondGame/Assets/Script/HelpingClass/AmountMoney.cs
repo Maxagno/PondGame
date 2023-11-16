@@ -29,7 +29,10 @@ public class AmountMoney
     
      public string ToString()
     {
-        
+        if (amount == 0)
+        {
+            return "0 ";
+        }
         int power = (int)Mathf.Floor(Mathf.Log10((float)amount));
 
 

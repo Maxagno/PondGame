@@ -34,9 +34,6 @@ public class FishRow : MonoBehaviour
 
     public int amountLvlUp = 1;
 
-    public bool isLocked = true;
-
-    public float timeSinceLastPressed = 0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -59,7 +56,7 @@ public class FishRow : MonoBehaviour
         updateInfo();
     }
 
-    private void updateInfo()
+    public void updateInfo()
     {
         AmountMoney tmp_level = new AmountMoney(amountLvlUp);
         cost = fishlevel.getInfoToLevel(amountLvlUp);
