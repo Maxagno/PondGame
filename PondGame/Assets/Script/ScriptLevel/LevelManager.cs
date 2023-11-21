@@ -22,12 +22,10 @@ public class LevelManager : MonoBehaviour
 
     public Vector3 direction;
 
-    public static LevelManager instance;
 
     public GameObject PanelManager;
     public GameObject ZoneManager;
 
-    private bool hasInitialized = false;
 
 
     private float timeSinceLastResourceGeneration = 0f;
@@ -39,7 +37,6 @@ public class LevelManager : MonoBehaviour
 
     public int amountLvlUp = 1;
 
-    private ZoneManager zoneManager;
     private ClickerLevel clicker;
     private PanelManager panelManager;
 
@@ -58,6 +55,11 @@ public class LevelManager : MonoBehaviour
     public TMP_Text MoneyText;
     public TMP_Text ProductionText;
 
+    public LevelManager(LevelManager levelManager)
+    {
+
+    }
+
     void Start()
     {
         money = new AmountMoney(0.00D);
@@ -65,7 +67,6 @@ public class LevelManager : MonoBehaviour
         production = new AmountMoney(0.00D);
         clicker = new ClickerLevel();
         clickRow.setClicker(clicker);
-        Awake();
         updateTextMoney();
         updateTextProduction();
     }
@@ -219,24 +220,6 @@ public class LevelManager : MonoBehaviour
     // PRIVATE FUNCTION 
 
 
-    private void Awake()
-    {
-        if (!hasInitialized) // Only for the editor mode
-        {
-            // Effectuez vos opérations d'initialisation ici.
-            hasInitialized = true;
-            if (instance == null)
-            {
-                instance = this;
-                DontDestroyOnLoad(gameObject); // Garantit que l'objet GameManager ne sera pas détruit entre les scènes.
-            }
-            else
-            {
-                Debug.Log("BIG Problem ");
-                Destroy(gameObject);
-            }
-        }
-    }
 
     private void UpdateCanBeBought()
     {

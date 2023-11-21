@@ -74,4 +74,27 @@ public class PanelManager : MonoBehaviour
             }
         }
     }
+    /*
+    private void GenerateShopItems()
+    {
+        // Assurez-vous que le préfab d'article et le contenu sont définis.
+        if (itemPrefab == null || content == null)
+        {
+            Debug.LogError("Préfab ou contenu non défini dans le gestionnaire de boutique.");
+            return;
+        }
+
+        // INIT Click ROW
+        GameObject newItem = Instantiate(itemPrefab, content);
+        newItem.SetActive(true);
+        listRow.Add(newItem);
+
+        for (int i = 1; i < numberOfItems; i++)
+        {
+            newItem = Instantiate(itemPrefab, content);
+
+            newItem.SetActive(true);
+            listRow.Add(newItem);
+        }
+    }*/
 }
