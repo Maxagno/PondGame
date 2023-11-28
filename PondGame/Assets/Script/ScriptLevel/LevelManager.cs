@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : MonoBehaviour, IDataPersistence
 {
 
     [SerializeField]
@@ -23,7 +23,7 @@ public class LevelManager : MonoBehaviour
     public Vector3 direction;
 
 
-    public GameObject PanelManager;
+    public GameObject UIManager;
     public GameObject ZoneManager;
 
 
@@ -32,28 +32,42 @@ public class LevelManager : MonoBehaviour
     private int timeCalled = 0;
 
     private AmountMoney money;
+
     private AmountMoney moneyUsed;
     public AmountMoney production;
 
     public int amountLvlUp = 1;
 
-    private ClickerLevel clicker;
-    private PanelManager panelManager;
+    public ClickerLevel clicker;
+    public UIManager uIManager;
 
     public List<Button> listRow_Amount = new List<Button>();
 
 
-    public List<GameObject> listRow_GameObject = new List<GameObject>();
     public List<GameObject> listBoostRow_GameObject = new List<GameObject>();
-    public List<FishRow> listFishRow = new List<FishRow>();
     public List<BoostLevel> listBoostRow = new List<BoostLevel>();
-    public ClickRow clickRow;
     public List<FishLevel> listFish = new List<FishLevel>();
 
+    public FishRowManager fishRowManager;
 
     // UI TEXT Variable
     public TMP_Text MoneyText;
     public TMP_Text ProductionText;
+
+    public void LoadData(GameData data)
+    {
+        money = new AmountMoney(0.00D);
+        Debug.Log("Here in the loading of the level manager, data.money is : " + data.money);
+        this.money.amount = data.money;
+        updateTextMoney();
+    }
+
+    public void SaveData(ref GameData data)
+    {
+        data.money = this.money.amount;
+    }
+
+    
 
     public LevelManager(LevelManager levelManager)
     {
@@ -62,18 +76,24 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        money = new AmountMoney(0.00D);
+        clicker = new ClickerLevel();
+        Debug.Log(clicker.getLevel());
         moneyUsed = new AmountMoney(0.00D);
         production = new AmountMoney(0.00D);
-        clicker = new ClickerLevel();
-        clickRow.setClicker(clicker);
+        initFishRowManager();
+
         updateTextMoney();
         updateTextProduction();
     }
 
+    private void initFishRowManager()
+    {
+        fishRowManager.setInfo(this, clicker, listFish);
+    }
+
     void Update()
     {
-        if (!PanelManager.activeSelf)
+        if (!UIManager.activeSelf)
         {
             PanCamera();
         }
@@ -106,7 +126,6 @@ public class LevelManager : MonoBehaviour
 
 
             //Debug.Log("Call ressourceGeneration " + timeCalled);
-            //money.updateAllAmount(production);
             updateMoney(production);
         }
     }
@@ -135,17 +154,12 @@ public class LevelManager : MonoBehaviour
             listRow_Amount[2].interactable = false;
         }
         amountLvlUp = amount;
-        clickRow.setAmount(amountLvlUp);
-        for (int i = 0; i < listFishRow.Count; i++)
-        {
-            listFishRow[i].setAmount(amount);
-        }
-        UpdateCanBeBought();
+        fishRowManager.updateAmount(amount);
     }
 
     public void onClick()
     {
-        if (!PanelManager.activeSelf)
+        if (!UIManager.activeSelf)
         {
             money.updateAmount(clicker.getTotalProduction().getAmount());
             updateTextMoney();
@@ -207,10 +221,11 @@ public class LevelManager : MonoBehaviour
                 if (fishId == tmpFish.id || fishId == -1)
                 {
                     updateProduction(tmpFish.addBoost(value));
-                    listFishRow[i].updateInfo();
+                    
                 }
             }
         }
+        fishRowManager.boostUpgrade();
     }
 
     public void hideRow(int id)
@@ -222,43 +237,53 @@ public class LevelManager : MonoBehaviour
 
 
     private void UpdateCanBeBought()
-    {
-        if (clickRow.cost.amount.CompareTo(money.getAmount()) > 0)
+    {/*
+        if (clickRow != null)
         {
-            clickRow.buyButton.interactable = false;
-        }
-        else
-        {
-            clickRow.buyButton.interactable = true;
+            if (clickRow.cost.amount.CompareTo(money.getAmount()) > 0)
+            {
+                clickRow.buyButton.interactable = false;
+            }
+            else
+            {
+                clickRow.buyButton.interactable = true;
+            }
         }
         for (int i = 0; i < listFishRow.Count; i++)
         {
-            AmountMoney tmp_Cost = listFishRow[i].cost;
-            if (tmp_Cost.amount.CompareTo(money.getAmount()) > 0)
+            if (listFishRow[i] != null)
             {
-                listFishRow[i].buyButton.interactable = false;
-            } else
-            {
-                listFishRow[i].buyButton.interactable = true;
+                AmountMoney tmp_Cost = listFishRow[i].cost;
+                if (tmp_Cost.amount.CompareTo(money.getAmount()) > 0)
+                {
+                    listFishRow[i].buyButton.interactable = false;
+                }
+                else
+                {
+                    listFishRow[i].buyButton.interactable = true;
+                }
             }
         }
         for(int i = 0; i < listBoostRow.Count; i++)
         {
-            AmountMoney tmp_Cost = listBoostRow[i].cost;
-            if (tmp_Cost.amount.CompareTo(money.getAmount()) > 0)
+            if (listBoostRow[i] != null)
             {
-                listBoostRow[i].buyButton.interactable = false;
+                AmountMoney tmp_Cost = listBoostRow[i].cost;
+                if (tmp_Cost.amount.CompareTo(money.getAmount()) > 0)
+                {
+                    listBoostRow[i].buyButton.interactable = false;
+                }
+                else
+                {
+                    listBoostRow[i].buyButton.interactable = true;
+                }
             }
-            else
-            {
-                listBoostRow[i].buyButton.interactable = true;
-            }
-        }
+        }*/
     }
 
     private void updateTextMoney()
     {
-        UpdateCanBeBought();
+        fishRowManager.UpdateCanBeBought();
         MoneyText.text = "Gold: " + money.ToString();
     }
 

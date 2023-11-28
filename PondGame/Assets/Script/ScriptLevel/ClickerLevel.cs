@@ -30,19 +30,6 @@ public class ClickerLevel
     public double incremental_CostUpgrade = 1D;
     public double future_BoostCostUpgrade = 1D;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    
-
     public void levelUp(double amount)
     {
         level.updateAmount(amount);

@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System;
+using Newtonsoft.Json;
 
 public static class SaveSystem 
 {
+    /*
     public static void SaveData (LevelManager levelManager)
     {
-        BinaryFormatter formatter = new BinaryFormatter();
+        JsonSerializer serializer = new JsonSerializer();
 
         string path = Application.persistentDataPath + "levelManager.json";
         FileStream stream = new FileStream(path, FileMode.Create);
@@ -35,5 +37,5 @@ public static class SaveSystem
             Debug.LogError("Save file not found in " +  path);
             return null;
         }
-    }
+    }*/
 }

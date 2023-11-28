@@ -10,7 +10,7 @@ public class FishRow : MonoBehaviour
     public int id;
 
     public FishLevel fishlevel;
-    public LevelManager levelManager;
+    public FishRowManager fishRowManager;
 
     public int fishId;
     public int zoneId;
@@ -39,13 +39,18 @@ public class FishRow : MonoBehaviour
     {
         initFish();
     }
-
+    public void setInfo(FishLevel fish, FishRowManager fishRowManager)
+    {
+        this.fishRowManager = fishRowManager;
+        this.fishlevel = fish;
+        updateInfo();
+    }
     public void onClickUpgrade()
     {
-        if (levelManager.updateBoughtMoney(cost) == 0)
+        if (fishRowManager.updateBoughtMoney(cost) == 0)
         {
             double amount = fishlevel.levelUp(amountLvlUp);
-            levelManager.updateProduction(amount);
+            fishRowManager.updateProduction(amount);
             updateInfo();
         }
     }

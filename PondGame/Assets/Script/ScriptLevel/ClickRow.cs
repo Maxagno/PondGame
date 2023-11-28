@@ -10,7 +10,7 @@ public class ClickRow : MonoBehaviour
     public int id;
 
     public ClickerLevel clicker;
-    public LevelManager levelManager;
+    public FishRowManager fishRowManager;
 
     public AmountMoney production;
     public AmountMoney cost;
@@ -32,8 +32,9 @@ public class ClickRow : MonoBehaviour
     public bool isLocked = true;
 
 
-    public void setClicker(ClickerLevel clicker)
+    public void setInfo(ClickerLevel clicker, FishRowManager fishRowManager)
     {
+        this.fishRowManager = fishRowManager;
         this.clicker = clicker;
         Name_Text.text = "Click";
         updateInfo();
@@ -41,7 +42,7 @@ public class ClickRow : MonoBehaviour
 
     public void onClickUpgrade()
     {
-        levelManager.updateBoughtMoney(cost);
+        fishRowManager.updateBoughtMoney(cost);
         clicker.levelUp(amountLvlUp);
         updateInfo();
     }
