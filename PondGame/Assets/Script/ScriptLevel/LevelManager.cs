@@ -11,8 +11,8 @@ public class LevelManager : MonoBehaviour, IDataPersistence
     private Camera cam;
 
     Vector3 touchStart;
-    private float topLimit = 0f;
-    private float bottomLimit = -2000.0f;
+    private float topLimit;
+    private float bottomLimit;
 
     private Vector3 _curPosition;
     private Vector3 _velocity;
@@ -39,7 +39,6 @@ public class LevelManager : MonoBehaviour, IDataPersistence
     public int amountLvlUp = 1;
 
     public ClickerLevel clicker;
-    public UIManager uIManager;
 
     public List<Button> listRow_Amount = new List<Button>();
 
@@ -56,15 +55,29 @@ public class LevelManager : MonoBehaviour, IDataPersistence
 
     public void LoadData(GameData data)
     {
+        topLimit = 1f;
+        bottomLimit = -2000f;
+
         money = new AmountMoney(0.00D);
-        Debug.Log("Here in the loading of the level manager, data.money is : " + data.money);
+
+        //Debug.Log("Here in the loading of the level manager, data.money is : " + data.money);
         this.money.amount = data.money;
+        cam.transform.position = new Vector3(cam.transform.position.x, data.cameraPositionY, cam.transform.position.z);
+        clicker = new ClickerLevel();
+        Debug.Log(clicker.getLevel());
+        moneyUsed = new AmountMoney(0.00D);
+        production = new AmountMoney(0.00D);
+
+        initFishRowManager();
         updateTextMoney();
+        updateTextProduction();
+
     }
 
     public void SaveData(ref GameData data)
     {
         data.money = this.money.amount;
+        data.cameraPositionY = cam.transform.position.y;
     }
 
     
@@ -74,18 +87,6 @@ public class LevelManager : MonoBehaviour, IDataPersistence
 
     }
 
-    void Start()
-    {
-        clicker = new ClickerLevel();
-        Debug.Log(clicker.getLevel());
-        moneyUsed = new AmountMoney(0.00D);
-        production = new AmountMoney(0.00D);
-        initFishRowManager();
-
-        updateTextMoney();
-        updateTextProduction();
-    }
-
     private void initFishRowManager()
     {
         fishRowManager.setInfo(this, clicker, listFish);
@@ -93,17 +94,15 @@ public class LevelManager : MonoBehaviour, IDataPersistence
 
     void Update()
     {
-        if (!UIManager.activeSelf)
+        if (! UIManager.activeSelf)
         {
             PanCamera();
         }
-
         if (_underInertia && _time <= SmoothTime)
         {
             cam.transform.position += _velocity;
             float newY = Mathf.Clamp(cam.transform.position.y, bottomLimit, topLimit);
             cam.transform.position = new Vector3(cam.transform.position.x, newY, cam.transform.position.z);
-
             _velocity = Vector3.Lerp(_velocity, Vector3.zero, _time);
             _time += Time.smoothDeltaTime;
         }
@@ -310,11 +309,11 @@ public class LevelManager : MonoBehaviour, IDataPersistence
             float finalYPos = cam.transform.position.y + direction.y;
             //Debug.Log("Old: " + finalYPos);
             finalYPos = Mathf.Clamp(finalYPos, bottomLimit, topLimit);
-            //Debug.Log("New: " + finalYPos);
-            Vector3 desiredPosition = new Vector3(cam.transform.position.x, finalYPos, cam.transform.position.z);
-            cam.transform.position = desiredPosition;
+            //Debug.Log("New: " + finalYPos + "Min : " + bottomLimit + " Max : "+topLimit);
+            cam.transform.position = new Vector3(cam.transform.position.x, finalYPos, cam.transform.position.z);
 
-            _curPosition = desiredPosition;
+            _curPosition = cam.transform.position;
+            Debug.Log(_curPosition);
             _velocity = _curPosition - _prevPosition;
 
         }
