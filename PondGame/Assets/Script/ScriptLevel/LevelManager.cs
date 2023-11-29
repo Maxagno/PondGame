@@ -73,10 +73,38 @@ public class LevelManager : MonoBehaviour, IDataPersistence
         {
             loadDataFish(listFish[i], data.listOfFish[i]);
         }
+        if (data.clicker != null)
+        {
+            loadClicker(data.clicker);
+        }
         initFishRowManager();
         updateTextMoney();
         updateTextProduction();
 
+    }
+
+    private void loadClicker(ClickerData data)
+    {
+        clicker.level.amount = data.level;
+        clicker.total_cost.amount = data.currentCost;
+        clicker.base_cost.amount = data.baseCost;
+        clicker.total_Production.amount = data.currentProduction;
+        clicker.base_Production.amount = data.baseProduction;
+        clicker.boostAmount = data.boostAmount;
+        clicker.base_boostAmount = data.base_boostAmount;
+        clicker.incremental_CostUpgrade = data.incremental_CostUpgrade;
+    }
+
+    private void saveClicker(ClickerData data) 
+    {
+        data.level = clicker.level.amount;
+        data.currentCost = clicker.total_cost.amount;
+        data.baseCost = clicker.base_cost.amount;
+        data.currentProduction = clicker.total_Production.amount;
+        data.baseProduction = clicker.base_Production.amount;
+        data.boostAmount = clicker.boostAmount;
+        data.base_boostAmount = clicker.base_boostAmount;
+        data.incremental_CostUpgrade = clicker.incremental_CostUpgrade;
     }
 
     private void saveDataFish(FishLevel fish, FishData fishData)
@@ -125,6 +153,13 @@ public class LevelManager : MonoBehaviour, IDataPersistence
                 data.listOfFish.Add(new FishData());
             }
             saveDataFish(listFish[i], data.listOfFish[i]);
+        }
+        if (data.clicker == null)
+        {
+            data.clicker = new ClickerData(this.sceneName, clicker.level.amount, clicker.total_cost.amount, clicker.base_cost.amount, clicker.total_Production.amount, clicker.base_Production.amount, clicker.boostAmount, clicker.base_boostAmount, clicker.incremental_CostUpgrade);
+        } else
+        {
+            saveClicker(data.clicker);
         }
 
     }

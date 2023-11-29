@@ -14,6 +14,8 @@ public class GameData
 
     public List<FishData> listOfFish = new List<FishData>();
 
+    public ClickerData clicker = null;
+
     public GameData()
     {
         //Init camera position
