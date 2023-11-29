@@ -5,8 +5,8 @@ using UnityEngine;
 public class FishLevel : MonoBehaviour
 {
     [SerializeField]
-    public int id;
-    public int zoneId;
+    public string id;
+    public string zoneId;
     public string name;
     public AmountMoney level = new AmountMoney(1D);
 
@@ -36,17 +36,6 @@ public class FishLevel : MonoBehaviour
     public string description;
 
     public bool isLocked = true;
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     
     public double levelUp(double amount)
     {
@@ -216,8 +205,8 @@ public class FishLevel : MonoBehaviour
 
     //GETTER SETTER 
 
-    public int getId() { return id; }
-    public int getZoneId() { return zoneId; }
+    public string getId() { return id; }
+    public string getZoneId() { return zoneId; }
     public string getName() { return name; }
     public AmountMoney getLevel() { return level; }
     public AmountMoney getBaseProduction() { return base_Production; }

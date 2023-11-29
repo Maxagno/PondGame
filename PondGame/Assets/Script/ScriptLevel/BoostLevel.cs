@@ -7,8 +7,8 @@ using TMPro;
 public class BoostLevel : MonoBehaviour
 {
     public int id;
-    public int fishId;
-    public int zoneId;
+    public string fishId;
+    public string zoneId;
 
     public double value;
     public double cost_Value = 1.00D;

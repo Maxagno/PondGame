@@ -6,7 +6,9 @@ using TMPro;
 
 public class LevelManager : MonoBehaviour, IDataPersistence
 {
+    [Header("Scène Name")]
 
+    [SerializeField] private string sceneName;
     [SerializeField]
     private Camera cam;
 
@@ -26,7 +28,7 @@ public class LevelManager : MonoBehaviour, IDataPersistence
     public GameObject UIManager;
     public GameObject ZoneManager;
 
-
+    
 
     private float timeSinceLastResourceGeneration = 0f;
     private int timeCalled = 0;
@@ -64,28 +66,69 @@ public class LevelManager : MonoBehaviour, IDataPersistence
         this.money.amount = data.money;
         cam.transform.position = new Vector3(cam.transform.position.x, data.cameraPositionY, cam.transform.position.z);
         clicker = new ClickerLevel();
-        Debug.Log(clicker.getLevel());
         moneyUsed = new AmountMoney(0.00D);
         production = new AmountMoney(0.00D);
-
+        this.production.amount = data.production;
+        for (global::System.Int32 i = 0; i < data.listOfFish.Count; i++)
+        {
+            loadDataFish(listFish[i], data.listOfFish[i]);
+        }
         initFishRowManager();
         updateTextMoney();
         updateTextProduction();
 
     }
 
+    private void saveDataFish(FishLevel fish, FishData fishData)
+    {
+        fishData.sceneId = "SeaLevel";
+        fishData.zoneId = fish.zoneId;
+        fishData.id = fish.id;
+
+        fishData.level = fish.level.amount;
+        fishData.currentCost = fish.total_cost.amount;
+        fishData.baseCost = fish.base_cost.amount;
+
+        fishData.currentProduction = fish.total_Production.amount;
+        fishData.baseProduction = fish.base_Production.amount;
+
+        fishData.boostAmount = fish.boostAmount;
+        fishData.base_boostAmount = fish.base_boostAmount;
+
+        fishData.incremental_CostUpgrade = fish.incremental_CostUpgrade;
+    } 
+
+    private void loadDataFish(FishLevel fish, FishData fishData)
+    {
+        fish.level.amount = fishData.level;
+        fish.total_cost.amount = fishData.currentCost;
+        fish.base_cost.amount = fishData.baseCost;
+
+        fish.total_Production.amount = fishData.currentProduction;
+        fish.base_Production.amount = fishData.baseProduction;
+
+        fish.boostAmount = fishData.boostAmount;
+        fish.base_boostAmount = fishData.base_boostAmount;
+
+        fish.incremental_CostUpgrade = fishData.incremental_CostUpgrade;
+    }
+
     public void SaveData(ref GameData data)
     {
         data.money = this.money.amount;
         data.cameraPositionY = cam.transform.position.y;
+        data.production = this.production.amount;
+        for (global::System.Int32 i = 0; i < listFish.Count; i++)
+        {
+            if (i >= data.listOfFish.Count)
+            {
+                data.listOfFish.Add(new FishData());
+            }
+            saveDataFish(listFish[i], data.listOfFish[i]);
+        }
+
     }
 
-    
-
-    public LevelManager(LevelManager levelManager)
-    {
-
-    }
 
     private void initFishRowManager()
     {
@@ -210,14 +253,14 @@ public class LevelManager : MonoBehaviour, IDataPersistence
         return 1;
     }
 
-    public void boostUpgrade(int zoneId, int fishId, double value)
+    public void boostUpgrade(string zoneId, string fishId, double value)
     {
         for (global::System.Int32 i = 0; i < listFish.Count; i++)
         {
             FishLevel tmpFish = listFish[i];
-            if (tmpFish.zoneId == zoneId || zoneId == -1)
+            if (string.Equals(tmpFish.zoneId,zoneId) || string.Equals(zoneId,"-1"))
             {
-                if (fishId == tmpFish.id || fishId == -1)
+                if (string.Equals(fishId,tmpFish.id) || string.Equals(fishId,"-1"))
                 {
                     updateProduction(tmpFish.addBoost(value));
                     
@@ -294,7 +337,6 @@ public class LevelManager : MonoBehaviour, IDataPersistence
 
     private void PanCamera()
     {
-
         if (Input.GetMouseButtonDown(0))
         {
             touchStart = cam.ScreenToWorldPoint(Input.mousePosition);
@@ -313,7 +355,6 @@ public class LevelManager : MonoBehaviour, IDataPersistence
             cam.transform.position = new Vector3(cam.transform.position.x, finalYPos, cam.transform.position.z);
 
             _curPosition = cam.transform.position;
-            Debug.Log(_curPosition);
             _velocity = _curPosition - _prevPosition;
 
         }

@@ -7,13 +7,13 @@ using TMPro;
 public class FishRow : MonoBehaviour
 {
     [SerializeField]
-    public int id;
+    public string id;
 
     public FishLevel fishlevel;
     public FishRowManager fishRowManager;
 
-    public int fishId;
-    public int zoneId;
+    public string fishId;
+    public string zoneId;
 
     public string fishName;
     public string fishDescription;

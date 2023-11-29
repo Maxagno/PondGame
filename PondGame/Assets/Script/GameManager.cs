@@ -6,14 +6,24 @@ using TMPro;
 
 
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IDataPersistence
 {
 
     public static GameManager instance;
 
     private bool hasInitialized = false;
 
+    private string lastSceneName = "";
 
+    public void LoadData(GameData data)
+    {
+
+    }
+
+    public void SaveData(ref GameData data)
+    {
+
+    }
 
     void Update()
     {
@@ -23,6 +33,7 @@ public class GameManager : MonoBehaviour
     {
         if (!hasInitialized) // Only for the editor mode
         {
+            Debug.Log("No Problem ");
             // Effectuez vos opérations d'initialisation ici.
             hasInitialized = true;
             if (instance == null)
