@@ -13,27 +13,33 @@ public class GameManager : MonoBehaviour, IDataPersistence
 
     private bool hasInitialized = false;
 
-    private string lastSceneName = "";
+    public string lastSceneName = "";
 
     public void LoadData(GameData data)
     {
-
+        this.lastSceneName = data.lastSceneName;
     }
 
     public void SaveData(ref GameData data)
     {
+        data.lastSceneName = this.lastSceneName;
+    }
 
+    public void changingScene(string sceneName)
+    {
+        Debug.Log(sceneName);
+        this.lastSceneName = sceneName;
     }
 
     void Update()
     {
+
     }
 
     private void Awake()
     {
         if (!hasInitialized) // Only for the editor mode
         {
-            Debug.Log("No Problem ");
             // Effectuez vos opérations d'initialisation ici.
             hasInitialized = true;
             if (instance == null)

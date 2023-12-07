@@ -8,7 +8,7 @@ public class LevelManager : MonoBehaviour, IDataPersistence
 {
     [Header("Scène Name")]
 
-    [SerializeField] private string sceneName;
+    [SerializeField] public string sceneName;
     [SerializeField]
     private Camera cam;
 
@@ -44,12 +44,11 @@ public class LevelManager : MonoBehaviour, IDataPersistence
 
     public List<Button> listRow_Amount = new List<Button>();
 
-
-    public List<GameObject> listBoostRow_GameObject = new List<GameObject>();
     public List<BoostLevel> listBoostRow = new List<BoostLevel>();
     public List<FishLevel> listFish = new List<FishLevel>();
 
     public FishRowManager fishRowManager;
+    public BoostRowManager boostRowManager;
 
     // UI TEXT Variable
     public TMP_Text MoneyText;
@@ -57,27 +56,43 @@ public class LevelManager : MonoBehaviour, IDataPersistence
 
     public void LoadData(GameData data)
     {
+        SceneData dataScene = data.listOfScene[sceneName];
         topLimit = 1f;
         bottomLimit = -2000f;
 
         money = new AmountMoney(0.00D);
 
         //Debug.Log("Here in the loading of the level manager, data.money is : " + data.money);
-        this.money.amount = data.money;
-        cam.transform.position = new Vector3(cam.transform.position.x, data.cameraPositionY, cam.transform.position.z);
+        this.money.amount = dataScene.money;
+        cam.transform.position = new Vector3(cam.transform.position.x, dataScene.cameraPositionY, cam.transform.position.z);
         clicker = new ClickerLevel();
         moneyUsed = new AmountMoney(0.00D);
         production = new AmountMoney(0.00D);
-        this.production.amount = data.production;
-        for (global::System.Int32 i = 0; i < data.listOfFish.Count; i++)
+        this.production.amount = dataScene.production;
+        for (global::System.Int32 i = 0; i < dataScene.listOfFish.Count; i++)
         {
-            loadDataFish(listFish[i], data.listOfFish[i]);
+            loadDataFish(listFish[i], dataScene.listOfFish[i]);
         }
-        if (data.clicker != null)
+        Debug.Log("Count boost data : " + dataScene.listOfBoost.Count);
+        //listBoostRow.Clear();
+        for (global::System.Int32 i = 0; i < dataScene.listOfBoost.Count; i++)
         {
-            loadClicker(data.clicker);
+            if (dataScene.listOfBoost[i] != null)
+            {
+                if (listBoostRow.Count <= i)
+                {
+                    listBoostRow.Add(new BoostLevel());
+                }
+                loadDataBoost(listBoostRow[i], dataScene.listOfBoost[i]);
+                listBoostRow[i].levelManager = this;
+            }
+        }
+        if (dataScene.clicker != null)
+        {
+            loadClicker(dataScene.clicker);
         }
         initFishRowManager();
+        initBoostRowManager();
         updateTextMoney();
         updateTextProduction();
 
@@ -141,25 +156,48 @@ public class LevelManager : MonoBehaviour, IDataPersistence
         fish.incremental_CostUpgrade = fishData.incremental_CostUpgrade;
     }
 
+    private void saveDataBoost(BoostLevel boost, BoostData boostData)
+    {
+        boostData.copyData(boost);
+    }
+
+    private void loadDataBoost(BoostLevel boost, BoostData boostData)
+    {
+        boost.loadData(boostData);
+    }
+
     public void SaveData(ref GameData data)
     {
-        data.money = this.money.amount;
-        data.cameraPositionY = cam.transform.position.y;
-        data.production = this.production.amount;
+        SceneData dataScene = data.listOfScene[sceneName];
+        dataScene.money = this.money.amount;
+        dataScene.cameraPositionY = cam.transform.position.y;
+        dataScene.production = this.production.amount;
         for (global::System.Int32 i = 0; i < listFish.Count; i++)
         {
-            if (i >= data.listOfFish.Count)
+            if (i >= dataScene.listOfFish.Count)
             {
-                data.listOfFish.Add(new FishData());
+                dataScene.listOfFish.Add(new FishData());
             }
-            saveDataFish(listFish[i], data.listOfFish[i]);
+            saveDataFish(listFish[i], dataScene.listOfFish[i]);
         }
-        if (data.clicker == null)
+        dataScene.listOfBoost.Clear();
+        for (global::System.Int32 i = 0; i < listBoostRow.Count; i++)
         {
-            data.clicker = new ClickerData(this.sceneName, clicker.level.amount, clicker.total_cost.amount, clicker.base_cost.amount, clicker.total_Production.amount, clicker.base_Production.amount, clicker.boostAmount, clicker.base_boostAmount, clicker.incremental_CostUpgrade);
+            if (i >= dataScene.listOfBoost.Count)
+            {
+                dataScene.listOfBoost.Add(new BoostData());
+            }
+            if (listBoostRow[i] != null)
+            {
+                saveDataBoost(listBoostRow[i], dataScene.listOfBoost[i]);
+            }
+        }
+        if (dataScene.clicker == null)
+        {
+            dataScene.clicker = new ClickerData(this.sceneName, clicker.level.amount, clicker.total_cost.amount, clicker.base_cost.amount, clicker.total_Production.amount, clicker.base_Production.amount, clicker.boostAmount, clicker.base_boostAmount, clicker.incremental_CostUpgrade);
         } else
         {
-            saveClicker(data.clicker);
+            saveClicker(dataScene.clicker);
         }
 
     }
@@ -169,6 +207,11 @@ public class LevelManager : MonoBehaviour, IDataPersistence
     {
         fishRowManager.setInfo(this, clicker, listFish);
     }
+    private void initBoostRowManager()
+    {
+        boostRowManager.setInfo(this, listBoostRow);
+    }
+
 
     void Update()
     {
@@ -257,13 +300,6 @@ public class LevelManager : MonoBehaviour, IDataPersistence
 
     public void updateMoney(AmountMoney amount = null)
     {
-        
-        //Debug.Log("Updating the money");
-
-        //Debug.Log("Money = " + money.ToString());
-        //Debug.Log("amount added = " + amount.ToString());
-        //Debug.Log("Money.listgold[i] : " + money.listGold[0]);
-
         money.updateAmount(amount.getAmount());
         updateTextMoney();
     }
@@ -290,6 +326,7 @@ public class LevelManager : MonoBehaviour, IDataPersistence
 
     public void boostUpgrade(string zoneId, string fishId, double value)
     {
+
         for (global::System.Int32 i = 0; i < listFish.Count; i++)
         {
             FishLevel tmpFish = listFish[i];
@@ -307,56 +344,16 @@ public class LevelManager : MonoBehaviour, IDataPersistence
 
     public void hideRow(int id)
     {
-        listBoostRow_GameObject[id].SetActive(false);
+        for(int i = 0;i < listBoostRow.Count;i++)
+        {
+            if (listBoostRow[i].id == id)
+            {
+                listBoostRow.RemoveAt(i);
+            }
+        }
+        boostRowManager.hideRow(id);
     }
     // PRIVATE FUNCTION 
-
-
-
-    private void UpdateCanBeBought()
-    {/*
-        if (clickRow != null)
-        {
-            if (clickRow.cost.amount.CompareTo(money.getAmount()) > 0)
-            {
-                clickRow.buyButton.interactable = false;
-            }
-            else
-            {
-                clickRow.buyButton.interactable = true;
-            }
-        }
-        for (int i = 0; i < listFishRow.Count; i++)
-        {
-            if (listFishRow[i] != null)
-            {
-                AmountMoney tmp_Cost = listFishRow[i].cost;
-                if (tmp_Cost.amount.CompareTo(money.getAmount()) > 0)
-                {
-                    listFishRow[i].buyButton.interactable = false;
-                }
-                else
-                {
-                    listFishRow[i].buyButton.interactable = true;
-                }
-            }
-        }
-        for(int i = 0; i < listBoostRow.Count; i++)
-        {
-            if (listBoostRow[i] != null)
-            {
-                AmountMoney tmp_Cost = listBoostRow[i].cost;
-                if (tmp_Cost.amount.CompareTo(money.getAmount()) > 0)
-                {
-                    listBoostRow[i].buyButton.interactable = false;
-                }
-                else
-                {
-                    listBoostRow[i].buyButton.interactable = true;
-                }
-            }
-        }*/
-    }
 
     private void updateTextMoney()
     {

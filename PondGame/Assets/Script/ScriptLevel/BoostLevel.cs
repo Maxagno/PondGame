@@ -54,4 +54,31 @@ public class BoostLevel : MonoBehaviour
         Cost_Text.text = cost.ToString() + " G";
         Boost_Text.text = value.ToString() + "%";
     }
+
+    public void copy(BoostLevel boost)
+    {
+        this.id = boost.id;
+        this.zoneId = boost.zoneId;
+        this.fishId = boost.fishId;
+        this.levelManager = boost.levelManager;
+        this.name = boost.name;
+        this.cost = boost.cost;
+        this.value = boost.value;
+        this.cost_Value = boost.cost_Value;
+        this.name = boost.name;
+        this.description = boost.description;
+    }
+    public void loadData(BoostData boost)
+    {
+        this.id = boost.id;
+        this.zoneId = boost.zoneId;
+        this.fishId = boost.fishId;
+        this.name = boost.name;
+        this.cost = new AmountMoney(boost.cost);
+        this.value = boost.value;
+        this.cost_Value = boost.cost_Value;
+        this.name = boost.name;
+        this.description = boost.description;
+    }
+
 }

@@ -4,27 +4,16 @@ using UnityEngine;
 
 public class GameData
 {
-    public float cameraPositionY;
-
-    public double money;
-    public double production;
-    public double moneyUsed;
-
     public string lastSceneName;
 
-    public List<FishData> listOfFish = new List<FishData>();
+    public Dictionary<string, SceneData> listOfScene = new Dictionary<string, SceneData>();
 
-    public ClickerData clicker = null;
 
     public GameData()
     {
-        //Init camera position
-        cameraPositionY = 0f;
+        listOfScene.Add("SeaLevel", new SceneData());
+
         lastSceneName = "SeaLevel"; 
-        // Init LevelManager data
-        this.money = 0;
-        this.moneyUsed = 0;
-        this.production = 0;
 
         //Init all the fish in the corresponding levelManager
 

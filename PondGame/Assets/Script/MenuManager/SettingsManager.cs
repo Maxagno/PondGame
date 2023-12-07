@@ -7,6 +7,13 @@ public class SettingsManager : MonoBehaviour
 {
     public void MoveToScene()
     {
+        GameManager.instance.changingScene("MainMenu");
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public void MoveToLastScene()
+    {
+        SceneManager.LoadScene(GameManager.instance.lastSceneName);
+        GameManager.instance.changingScene("SeaLevel");
     }
 }

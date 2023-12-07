@@ -25,6 +25,7 @@ public class StartMenuManager : MonoBehaviour, IDataPersistence
             lastSceneName = "SeaLevel";
         }
         Debug.Log("Moving to : " + lastSceneName);
+        GameManager.instance.changingScene(lastSceneName);
         SceneManager.LoadScene(lastSceneName);
     }
 }
